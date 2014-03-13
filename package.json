@@ -1,0 +1,14 @@
+{
+    "name": "Folio",
+    "version": "0.0.1",
+    "author": "DyslexicChris",
+    "description": "A clustered node.js API framework inspired by express",
+    "dependencies": {
+        "underscore": "1.6.0"
+    },
+    "devDependencies": {
+        "mocha": "1.17.1",
+        "chai": "1.9.0",
+        "mockery": "1.4.0"
+    }
+}
