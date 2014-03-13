@@ -3,6 +3,9 @@
     "version": "0.0.1",
     "author": "DyslexicChris",
     "description": "A clustered node.js API framework inspired by express",
+    "scripts": {
+        "test": "./node_modules/mocha/bin/mocha -R spec"
+    },
     "dependencies": {
         "underscore": "1.6.0"
     },
