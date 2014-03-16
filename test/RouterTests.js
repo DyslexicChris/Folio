@@ -2,23 +2,10 @@ var expect = require('chai').expect;
 var Router = require('../lib/Router');
 
 describe('Router', function () {
-    'use strict';
-
 
     beforeEach(function () {
 
         this.router = new Router();
-
-        this.mockFinalHandler = function () {
-        };
-
-        this.mockPreHandlerA = function () {
-        };
-
-        this.mockPreHandlerB = function () {
-        };
-
-        this.mockPreHandlers = [this.mockPreHandlerA, this.mockPreHandlerB];
 
     });
 
@@ -31,7 +18,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -41,7 +28,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test_case/', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test_case/')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -51,7 +38,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test-case/:var', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test-case/:var')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -62,7 +49,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -72,7 +59,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/:varB/example', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/:varB/example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -82,7 +69,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/:varB/example.test', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/:varB/example.test')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -92,7 +79,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test.case/:var/:varB/example', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test.case/:var/:varB/example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -103,7 +90,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/static/:varB/_example', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/static/:varB/_example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -113,7 +100,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example/*', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/example/*')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -123,7 +110,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/*', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/*')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -133,7 +120,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/*', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/*')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -143,7 +130,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -158,7 +145,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test?', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test?')
                 }).to.throw('Invalid route specification');
 
             });
@@ -168,7 +155,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/*/test/:', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/*/test/:')
                 }).to.throw('Invalid route specification');
 
             });
@@ -178,7 +165,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '//test/', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '//test/')
                 }).to.throw('Invalid route specification');
 
             });
@@ -188,7 +175,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test//', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test//')
                 }).to.throw('Invalid route specification');
 
             });
@@ -198,7 +185,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', 'test/', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', 'test/')
                 }).to.throw('Invalid route specification');
 
             });
@@ -208,7 +195,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', 'test', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', 'test')
                 }).to.throw('Invalid route specification');
 
             });
@@ -218,7 +205,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var:', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var:')
                 }).to.throw('Invalid route specification');
 
             });
@@ -229,7 +216,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/*/example', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/*/example')
                 }).to.throw('Invalid route specification');
 
             });
@@ -239,7 +226,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example/*/route', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/example/*/route')
                 }).to.throw('Invalid route specification');
 
             });
@@ -250,7 +237,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example*', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/example*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -260,7 +247,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/:example*', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/:example*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -270,7 +257,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example*/', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/example*/')
                 }).to.throw('Invalid route specification');
 
             });
@@ -280,7 +267,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example*/*', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/example*/*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -290,7 +277,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example/**', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '/test/:var/example/**')
                 }).to.throw('Invalid route specification');
 
             });
@@ -300,7 +287,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '*', thisTest.mockFinalHandler)
+                    thisTest.router.addRoute('GET', '*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -309,11 +296,11 @@ describe('Router', function () {
 
     });
 
-    describe('When adding a basic route specification for GET requests without prehandlers', function () {
+    describe('When adding a basic route specification for GET requests - /someRoute.json', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('GET', '/someRoute', this.mockFinalHandler);
+            this.router.addRoute('GET', '/someRoute.json');
 
         });
 
@@ -325,101 +312,19 @@ describe('Router', function () {
         });
 
         it('Should add a route with the given specification /someRoute', function () {
-
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute');
-
-
-        });
-
-        it('Should add a route with no prehandlers', function () {
-
-            expect(this.router.routes[0].preHandlers).to.deep.equal([]);
-
-        });
-
-        it('Should add a route with the correct final handler', function () {
-
-            expect(this.router.routes[0].finalHandler).to.deep.equal(this.mockFinalHandler);
-
-        });
-
-    });
-
-    describe('When adding a basic route specification for GET requests with a single prehandler', function () {
-
-        beforeEach(function () {
-
-            this.router.addRoute('GET', '/someRoute.json', this.mockFinalHandler, this.mockPreHandlerA);
-
-        });
-
-        it('Should add a route with the given http method - GET', function () {
-
-            expect(this.router.routes.length).to.equal(1);
-            expect(this.router.routes[0].method).to.equal('get');
-
-        });
-
-        it('Should add a route with the given specification /someRoute.json', function () {
 
             expect(this.router.routes[0].routeSpec).to.equal('/someRoute.json');
 
-        });
-
-        it('Should add a route with the correct prehandler', function () {
-
-            expect(this.router.routes[0].preHandlers).to.deep.equal([this.mockPreHandlerA]);
-
-        });
-
-        it('Should add a route with the correct final handler', function () {
-
-            expect(this.router.routes[0].finalHandler).to.deep.equal(this.mockFinalHandler);
 
         });
 
     });
 
-    describe('When adding a basic route specification for GET requests with multiple prehandlers', function () {
+    describe('When adding a basic route specification for POST requests - /someRoute', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('GET', '/someRoute', this.mockFinalHandler, this.mockPreHandlers);
-
-        });
-
-        it('Should add a route with the given http method - GET', function () {
-
-            expect(this.router.routes.length).to.equal(1);
-            expect(this.router.routes[0].method).to.equal('get');
-
-        });
-
-        it('Should add a route with the given specification /someRoute', function () {
-
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute');
-
-        });
-
-        it('Should add a route with the correct prehandlers', function () {
-
-            expect(this.router.routes[0].preHandlers).to.deep.equal(this.mockPreHandlers);
-
-        });
-
-        it('Should add a route with the correct final handler', function () {
-
-            expect(this.router.routes[0].finalHandler).to.deep.equal(this.mockFinalHandler);
-
-        });
-
-    });
-
-    describe('When adding a basic route specification for POST requests', function () {
-
-        beforeEach(function () {
-
-            this.router.addRoute('POST', '/someRoute', this.mockFinalHandler);
+            this.router.addRoute('POST', '/someRoute');
 
         });
 
@@ -432,11 +337,11 @@ describe('Router', function () {
 
     });
 
-    describe('When adding a basic route specification for PUT requests', function () {
+    describe('When adding a basic route specification for PUT requests - /someRoute', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('PUT', '/someRoute', this.mockFinalHandler);
+            this.router.addRoute('PUT', '/someRoute');
 
         });
 
@@ -449,11 +354,11 @@ describe('Router', function () {
 
     });
 
-    describe('When adding a basic route specification for DELETE requests', function () {
+    describe('When adding a basic route specification for DELETE requests - /someRoute', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('DELETE', '/someRoute', this.mockFinalHandler);
+            this.router.addRoute('DELETE', '/someRoute');
 
         });
 
@@ -467,11 +372,11 @@ describe('Router', function () {
     });
 
 
-    describe('When adding a basic route specification for OTHER requests (non-standard method)', function () {
+    describe('When adding a basic route specification for OTHER requests (non-standard method) - /someRoute', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('OTHER', '/someRoute', this.mockFinalHandler);
+            this.router.addRoute('OTHER', '/someRoute');
 
         });
 
@@ -488,7 +393,7 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('GET', '/some.Route', this.mockFinalHandler);
+            this.router.addRoute('GET', '/some.Route');
 
         });
 
@@ -533,8 +438,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/some.Route');
                 expect(this.matchedRoute.method).to.equal('get');
                 expect(this.matchedRoute.params).to.deep.equal({});
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -553,8 +456,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/some.Route');
                 expect(this.matchedRoute.method).to.equal('get');
                 expect(this.matchedRoute.params).to.deep.equal({});
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -662,9 +563,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/someRoute/');
                 expect(this.matchedRoute.method).to.equal('get');
                 expect(this.matchedRoute.params).to.deep.equal({});
-                expect(this.matchedRoute.preHandlers.length).to.equal(1);
-                expect(this.matchedRoute.preHandlers[0]).to.deep.equal(this.mockPreHandlerA);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -683,9 +581,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/someRoute/');
                 expect(this.matchedRoute.method).to.equal('get');
                 expect(this.matchedRoute.params).to.deep.equal({});
-                expect(this.matchedRoute.preHandlers.length).to.equal(1);
-                expect(this.matchedRoute.preHandlers[0]).to.deep.equal(this.mockPreHandlerA);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -791,9 +686,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/someRoute/:varA/');
                 expect(this.matchedRoute.method).to.equal('post');
                 expect(this.matchedRoute.params).to.deep.equal({varA: '123-abc_456'});
-                expect(this.matchedRoute.preHandlers.length).to.equal(2);
-                expect(this.matchedRoute.preHandlers).to.deep.equal(this.mockPreHandlers);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -810,9 +702,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/someRoute/:varA/');
                 expect(this.matchedRoute.method).to.equal('post');
                 expect(this.matchedRoute.params).to.deep.equal({varA: '123-abc_456'});
-                expect(this.matchedRoute.preHandlers.length).to.equal(2);
-                expect(this.matchedRoute.preHandlers).to.deep.equal(this.mockPreHandlers);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -888,8 +777,6 @@ describe('Router', function () {
                     varA: "123-abc_456",
                     varB: "abc_12-3"
                 });
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -909,8 +796,6 @@ describe('Router', function () {
                     varA: "123-abc_456",
                     varB: "abc_12-3"
                 });
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -1051,8 +936,6 @@ describe('Router', function () {
                     varA: "123-abc_456",
                     varB: "abc_12-3"
                 });
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -1072,8 +955,6 @@ describe('Router', function () {
                     varA: "123-abc_456",
                     varB: "abc_12-3"
                 });
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -1212,8 +1093,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/someRoute/*');
                 expect(this.matchedRoute.method).to.equal('put');
                 expect(this.matchedRoute.params).to.deep.equal({});
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -1232,8 +1111,6 @@ describe('Router', function () {
                 expect(this.matchedRoute.specification).to.equal('/someRoute/*');
                 expect(this.matchedRoute.method).to.equal('put');
                 expect(this.matchedRoute.params).to.deep.equal({});
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -1327,8 +1204,6 @@ describe('Router', function () {
                     varA: "abc-123_456",
                     varB: "123_456-abc"
                 });
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -1350,8 +1225,6 @@ describe('Router', function () {
                     varA: "abc-123_456",
                     varB: "123_456-abc"
                 });
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
@@ -1373,8 +1246,6 @@ describe('Router', function () {
                     varA: "abc-123_456",
                     varB: "123_456-abc"
                 });
-                expect(this.matchedRoute.preHandlers).to.deep.equal([]);
-                expect(this.matchedRoute.finalHandler).to.deep.equal(this.mockFinalHandler);
 
             });
 
