@@ -1,11 +1,11 @@
 var expect = require('chai').expect;
-var Router = require('../lib/Router');
+var RouteManager = require('../lib/RouteManager');
 
-describe('Router', function () {
+describe('RouteManager', function () {
 
     beforeEach(function () {
 
-        this.router = new Router();
+        this.routeManager = new RouteManager();
 
     });
 
@@ -18,7 +18,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test')
+                    thisTest.routeManager.addRoute('GET', '/test')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -28,7 +28,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test_case/')
+                    thisTest.routeManager.addRoute('GET', '/test_case/')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -38,7 +38,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test-case/:var')
+                    thisTest.routeManager.addRoute('GET', '/test-case/:var')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -49,7 +49,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -59,7 +59,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/:varB/example')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/:varB/example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -69,7 +69,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/:varB/example.test')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/:varB/example.test')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -79,7 +79,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test.case/:var/:varB/example')
+                    thisTest.routeManager.addRoute('GET', '/test.case/:var/:varB/example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -90,7 +90,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/static/:varB/_example')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/static/:varB/_example')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -100,7 +100,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example/*')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/example/*')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -110,7 +110,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/*')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/*')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -120,7 +120,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/*')
+                    thisTest.routeManager.addRoute('GET', '/*')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -130,7 +130,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/')
+                    thisTest.routeManager.addRoute('GET', '/')
                 }).to.not.throw('Invalid route specification');
 
             });
@@ -145,7 +145,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test?')
+                    thisTest.routeManager.addRoute('GET', '/test?')
                 }).to.throw('Invalid route specification');
 
             });
@@ -155,7 +155,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/*/test/:')
+                    thisTest.routeManager.addRoute('GET', '/*/test/:')
                 }).to.throw('Invalid route specification');
 
             });
@@ -165,7 +165,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '//test/')
+                    thisTest.routeManager.addRoute('GET', '//test/')
                 }).to.throw('Invalid route specification');
 
             });
@@ -175,7 +175,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test//')
+                    thisTest.routeManager.addRoute('GET', '/test//')
                 }).to.throw('Invalid route specification');
 
             });
@@ -185,7 +185,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', 'test/')
+                    thisTest.routeManager.addRoute('GET', 'test/')
                 }).to.throw('Invalid route specification');
 
             });
@@ -195,7 +195,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', 'test')
+                    thisTest.routeManager.addRoute('GET', 'test')
                 }).to.throw('Invalid route specification');
 
             });
@@ -205,7 +205,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var:')
+                    thisTest.routeManager.addRoute('GET', '/test/:var:')
                 }).to.throw('Invalid route specification');
 
             });
@@ -216,7 +216,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/*/example')
+                    thisTest.routeManager.addRoute('GET', '/test/*/example')
                 }).to.throw('Invalid route specification');
 
             });
@@ -226,7 +226,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example/*/route')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/example/*/route')
                 }).to.throw('Invalid route specification');
 
             });
@@ -237,7 +237,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example*')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/example*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -247,7 +247,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/:example*')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/:example*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -257,7 +257,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example*/')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/example*/')
                 }).to.throw('Invalid route specification');
 
             });
@@ -267,7 +267,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example*/*')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/example*/*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -277,7 +277,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '/test/:var/example/**')
+                    thisTest.routeManager.addRoute('GET', '/test/:var/example/**')
                 }).to.throw('Invalid route specification');
 
             });
@@ -287,7 +287,7 @@ describe('Router', function () {
                 var thisTest = this;
 
                 expect(function () {
-                    thisTest.router.addRoute('GET', '*')
+                    thisTest.routeManager.addRoute('GET', '*')
                 }).to.throw('Invalid route specification');
 
             });
@@ -300,20 +300,20 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('GET', '/someRoute.json');
+            this.routeManager.addRoute('GET', '/someRoute.json');
 
         });
 
         it('Should add a route with the given http method - GET', function () {
 
-            expect(this.router.routes.length).to.equal(1);
-            expect(this.router.routes[0].method).to.equal('get');
+            expect(this.routeManager.routes.length).to.equal(1);
+            expect(this.routeManager.routes[0].method).to.equal('get');
 
         });
 
         it('Should add a route with the given specification /someRoute', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute.json');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute.json');
 
 
         });
@@ -324,14 +324,14 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('POST', '/someRoute');
+            this.routeManager.addRoute('POST', '/someRoute');
 
         });
 
         it('Should add a route with the given http method - POST', function () {
 
-            expect(this.router.routes.length).to.equal(1);
-            expect(this.router.routes[0].method).to.equal('post');
+            expect(this.routeManager.routes.length).to.equal(1);
+            expect(this.routeManager.routes[0].method).to.equal('post');
 
         });
 
@@ -341,14 +341,14 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('PUT', '/someRoute');
+            this.routeManager.addRoute('PUT', '/someRoute');
 
         });
 
         it('Should add a route with the given http method - PUT', function () {
 
-            expect(this.router.routes.length).to.equal(1);
-            expect(this.router.routes[0].method).to.equal('put');
+            expect(this.routeManager.routes.length).to.equal(1);
+            expect(this.routeManager.routes[0].method).to.equal('put');
 
         });
 
@@ -358,14 +358,14 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('DELETE', '/someRoute');
+            this.routeManager.addRoute('DELETE', '/someRoute');
 
         });
 
         it('Should add a route with the given http method - DELETE', function () {
 
-            expect(this.router.routes.length).to.equal(1);
-            expect(this.router.routes[0].method).to.equal('delete');
+            expect(this.routeManager.routes.length).to.equal(1);
+            expect(this.routeManager.routes[0].method).to.equal('delete');
 
         });
 
@@ -376,14 +376,14 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('OTHER', '/someRoute');
+            this.routeManager.addRoute('OTHER', '/someRoute');
 
         });
 
         it('Should add a route with the given http method - OTHER', function () {
 
-            expect(this.router.routes.length).to.equal(1);
-            expect(this.router.routes[0].method).to.equal('other');
+            expect(this.routeManager.routes.length).to.equal(1);
+            expect(this.routeManager.routes[0].method).to.equal('other');
 
         });
 
@@ -393,44 +393,44 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('GET', '/some.Route');
+            this.routeManager.addRoute('GET', '/some.Route');
 
         });
 
         it('Should add a route to the routes collection', function () {
 
-            expect(this.router.routes.length).to.equal(1);
+            expect(this.routeManager.routes.length).to.equal(1);
 
         });
 
         it('Should add a route with the given http method - GET', function () {
 
-            expect(this.router.routes[0].method).to.equal('get');
+            expect(this.routeManager.routes[0].method).to.equal('get');
 
         });
 
         it('Should add a route with the given route specification - /someRoute', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/some.Route');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/some.Route');
 
         });
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.router.routes[0].regex.toString()).to.equal(/^\/some\.Route(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/some\.Route(?:\/)?$/i.toString());
 
         });
 
         it('Should add a route that has no variable components', function () {
 
-            expect(this.router.routes[0].variableComponents).to.deep.equal([]);
+            expect(this.routeManager.routes[0].variableComponents).to.deep.equal([]);
 
         });
 
         describe('When a url is expected to match - GET /some.Route', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.router.matchPath('GeT', '/some.Route');
+                this.matchedRoute = this.routeManager.matchPath('GeT', '/some.Route');
             });
 
             it('Should return the expected route', function () {
@@ -447,7 +447,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('GET', '/some.Route/');
+                this.matchedRoute = this.routeManager.matchPath('GET', '/some.Route/');
 
             });
 
@@ -465,7 +465,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('post', '/some.Route1');
+                this.matchedRoute = this.routeManager.matchPath('post', '/some.Route1');
 
             });
 
@@ -482,7 +482,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/some.Route1');
+                this.matchedRoute = this.routeManager.matchPath('get', '/some.Route1');
 
             });
 
@@ -498,7 +498,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('GET', '/some.Route/test');
+                this.matchedRoute = this.routeManager.matchPath('GET', '/some.Route/test');
 
             });
 
@@ -516,37 +516,37 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('GET', '/someRoute/', this.mockFinalHandler, this.mockPreHandlerA);
+            this.routeManager.addRoute('GET', '/someRoute/', this.mockFinalHandler, this.mockPreHandlerA);
 
         });
 
         it('Should add a route to the routes collection', function () {
 
-            expect(this.router.routes.length).to.equal(1);
+            expect(this.routeManager.routes.length).to.equal(1);
 
         });
 
         it('Should add a route with the given http method - GET', function () {
 
-            expect(this.router.routes[0].method).to.equal('get');
+            expect(this.routeManager.routes[0].method).to.equal('get');
 
         });
 
         it('Should add a route with the given route specification - /someRoute/', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute/');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/');
 
         });
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.router.routes[0].regex.toString()).to.equal(/^\/someRoute(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute(?:\/)?$/i.toString());
 
         });
 
         it('Should add a route that has no variable components', function () {
 
-            expect(this.router.routes[0].variableComponents).to.deep.equal([]);
+            expect(this.routeManager.routes[0].variableComponents).to.deep.equal([]);
 
         });
 
@@ -554,7 +554,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('gEt', '/someRoute');
+                this.matchedRoute = this.routeManager.matchPath('gEt', '/someRoute');
 
             });
 
@@ -572,7 +572,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('gEt', '/someRoute/');
+                this.matchedRoute = this.routeManager.matchPath('gEt', '/someRoute/');
 
             });
 
@@ -590,7 +590,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute');
 
             });
 
@@ -606,7 +606,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('/someRoute1');
+                this.matchedRoute = this.routeManager.matchPath('/someRoute1');
 
             });
 
@@ -622,7 +622,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('/someRoute/1');
+                this.matchedRoute = this.routeManager.matchPath('/someRoute/1');
 
             });
 
@@ -641,44 +641,44 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('POST', '/someRoute/:varA/', this.mockFinalHandler, this.mockPreHandlers);
+            this.routeManager.addRoute('POST', '/someRoute/:varA/', this.mockFinalHandler, this.mockPreHandlers);
 
         });
 
         it('Should add a route to the routes collection', function () {
 
-            expect(this.router.routes.length).to.equal(1);
+            expect(this.routeManager.routes.length).to.equal(1);
 
         });
 
         it('Should add a route with the given http method - POST', function () {
 
-            expect(this.router.routes[0].method).to.equal('post');
+            expect(this.routeManager.routes[0].method).to.equal('post');
 
         });
 
         it('Should add a route with the given route specification - /someRoute/:varA/', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute/:varA/');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/');
 
         });
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.router.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
 
         });
 
         it('Should add a route that has one variable component - varA', function () {
 
-            expect(this.router.routes[0].variableComponents).to.deep.equal(["varA"]);
+            expect(this.routeManager.routes[0].variableComponents).to.deep.equal(["varA"]);
 
         });
 
         describe('When a url is expected to match - POST /someRoute/123-abc_456', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456');
             });
 
             it('Should return the expected route', function () {
@@ -694,7 +694,7 @@ describe('Router', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/');
             });
 
             it('Should return the expected route', function () {
@@ -711,7 +711,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc/_456/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc/_456/');
 
             });
 
@@ -729,44 +729,44 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('POST', '/someRoute/:varA/component/:varB', this.mockFinalHandler);
+            this.routeManager.addRoute('POST', '/someRoute/:varA/component/:varB', this.mockFinalHandler);
 
         });
 
         it('Should add a route to the routes collection', function () {
 
-            expect(this.router.routes.length).to.equal(1);
+            expect(this.routeManager.routes.length).to.equal(1);
 
         });
 
         it('Should add a route with the given http method - POST', function () {
 
-            expect(this.router.routes[0].method).to.equal('post');
+            expect(this.routeManager.routes[0].method).to.equal('post');
 
         });
 
         it('Should add a route with the given route specification - /someRoute/:varA/component/:varB', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute/:varA/component/:varB');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/component/:varB');
 
         });
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.router.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
 
         });
 
         it('Should add a route that has multiple variable components - varA and varB', function () {
 
-            expect(this.router.routes[0].variableComponents).to.deep.equal(["varA", "varB"]);
+            expect(this.routeManager.routes[0].variableComponents).to.deep.equal(["varA", "varB"]);
 
         });
 
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3');
             });
 
             it('Should return the expected route', function () {
@@ -785,7 +785,7 @@ describe('Router', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3/', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/');
             });
 
             it('Should return the expected route', function () {
@@ -805,7 +805,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/123-abc_456/component/abc_12-3/');
 
             });
 
@@ -821,7 +821,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
 
             });
 
@@ -837,7 +837,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute//component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute//component/abc_12-3/');
 
             });
 
@@ -853,7 +853,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute///component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute///component/abc_12-3/');
 
             });
 
@@ -869,7 +869,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
 
             });
 
@@ -888,44 +888,44 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('POST', '/someRoute/:varA/component/:varB/', this.mockFinalHandler);
+            this.routeManager.addRoute('POST', '/someRoute/:varA/component/:varB/', this.mockFinalHandler);
 
         });
 
         it('Should add a route to the routes collection', function () {
 
-            expect(this.router.routes.length).to.equal(1);
+            expect(this.routeManager.routes.length).to.equal(1);
 
         });
 
         it('Should add a route with the given http method - POST', function () {
 
-            expect(this.router.routes[0].method).to.equal('post');
+            expect(this.routeManager.routes[0].method).to.equal('post');
 
         });
 
         it('Should add a route with the given route specification - /someRoute/:varA/component/:varB/', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute/:varA/component/:varB/');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/component/:varB/');
 
         });
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.router.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
 
         });
 
         it('Should add a route that has multiple variable components - varA and varB', function () {
 
-            expect(this.router.routes[0].variableComponents).to.deep.equal(["varA", "varB"]);
+            expect(this.routeManager.routes[0].variableComponents).to.deep.equal(["varA", "varB"]);
 
         });
 
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3');
             });
 
             it('Should return the expected route', function () {
@@ -944,7 +944,7 @@ describe('Router', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3/', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/');
             });
 
             it('Should return the expected route', function () {
@@ -964,7 +964,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/123-abc_456/component/abc_12-3/');
 
             });
 
@@ -980,7 +980,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
 
             });
 
@@ -996,7 +996,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute//component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute//component/abc_12-3/');
 
             });
 
@@ -1012,7 +1012,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute///component/abc_12-3/');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute///component/abc_12-3/');
 
             });
 
@@ -1028,7 +1028,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
+                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
 
             });
 
@@ -1045,37 +1045,37 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('PUT', '/someRoute/*', this.mockFinalHandler);
+            this.routeManager.addRoute('PUT', '/someRoute/*', this.mockFinalHandler);
 
         });
 
         it('Should add a route to the routes collection', function () {
 
-            expect(this.router.routes.length).to.equal(1);
+            expect(this.routeManager.routes.length).to.equal(1);
 
         });
 
         it('Should add a route with the given http method - PUT', function () {
 
-            expect(this.router.routes[0].method).to.equal('put');
+            expect(this.routeManager.routes[0].method).to.equal('put');
 
         });
 
         it('Should add a route with the given route specification - /someRoute/*', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute/*');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/*');
 
         });
 
         it('Should add a route with a regex created from the specification, where the slash must be present before the wildcard (even if empty), but with an optional trailing slash', function () {
 
-            expect(this.router.routes[0].regex.toString()).to.equal(/^\/someRoute\/[a-z0-9%\-_\.\/]*(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/[a-z0-9%\-_\.\/]*(?:\/)?$/i.toString());
 
         });
 
         it('Should add a route that with no variable components', function () {
 
-            expect(this.router.routes[0].variableComponents).to.deep.equal([]);
+            expect(this.routeManager.routes[0].variableComponents).to.deep.equal([]);
 
         });
 
@@ -1084,7 +1084,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('PUT', '/someRoute/');
+                this.matchedRoute = this.routeManager.matchPath('PUT', '/someRoute/');
 
             });
 
@@ -1102,7 +1102,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('PUT', '/someRoute/abc-123_456/test');
+                this.matchedRoute = this.routeManager.matchPath('PUT', '/someRoute/abc-123_456/test');
 
             });
 
@@ -1120,7 +1120,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('put', '/someRoute');
+                this.matchedRoute = this.routeManager.matchPath('put', '/someRoute');
 
             });
 
@@ -1136,7 +1136,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('post', '/someRoute');
+                this.matchedRoute = this.routeManager.matchPath('post', '/someRoute');
 
             });
 
@@ -1154,37 +1154,37 @@ describe('Router', function () {
 
         beforeEach(function () {
 
-            this.router.addRoute('GET', '/someRoute/:varA/:varB/*', this.mockFinalHandler);
+            this.routeManager.addRoute('GET', '/someRoute/:varA/:varB/*', this.mockFinalHandler);
 
         });
 
         it('Should add a route to the routes collection', function () {
 
-            expect(this.router.routes.length).to.equal(1);
+            expect(this.routeManager.routes.length).to.equal(1);
 
         });
 
         it('Should add a route with the given http method - GET', function () {
 
-            expect(this.router.routes[0].method).to.equal('get');
+            expect(this.routeManager.routes[0].method).to.equal('get');
 
         });
 
         it('Should add a route with the given route specification - /someRoute/:varA/:varB/*', function () {
 
-            expect(this.router.routes[0].routeSpec).to.equal('/someRoute/:varA/:varB/*');
+            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/:varB/*');
 
         });
 
         it('Should add a route with a regex created from the specification, where the slash must be present before the wildcard (even if empty), but with an optional trailing slash', function () {
 
-            expect(this.router.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/([a-z0-9%\-_\.]+)\/[a-z0-9%\-_\.\/]*(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/([a-z0-9%\-_\.]+)\/[a-z0-9%\-_\.\/]*(?:\/)?$/i.toString());
 
         });
 
         it('Should add a route that with the correct number of variable components - varA and varB', function () {
 
-            expect(this.router.routes[0].variableComponents).to.deep.equal(['varA', 'varB']);
+            expect(this.routeManager.routes[0].variableComponents).to.deep.equal(['varA', 'varB']);
 
         });
 
@@ -1192,7 +1192,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/abc-123_456/123_456-abc/');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc/');
 
             });
 
@@ -1213,7 +1213,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/abc-123_456/123_456-abc/abc');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc/abc');
 
             });
 
@@ -1234,7 +1234,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/abc-123_456/123_456-abc/abc/');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc/abc/');
 
             });
 
@@ -1255,7 +1255,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/abc-123_456/123_456-abc');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc');
 
             });
 
@@ -1271,7 +1271,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/abc-123_456/');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/');
 
             });
 
@@ -1287,7 +1287,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute/abc-123_456//test');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456//test');
 
             });
 
@@ -1303,7 +1303,7 @@ describe('Router', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.router.matchPath('get', '/someRoute//123_456-abc/test/case');
+                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute//123_456-abc/test/case');
 
             });
 
