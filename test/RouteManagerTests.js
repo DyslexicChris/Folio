@@ -313,7 +313,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given specification /someRoute', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute.json');
+            expect(this.routeManager.routes[0].specification).to.equal('/someRoute.json');
 
 
         });
@@ -411,7 +411,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given route specification - /someRoute', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/some.Route');
+            expect(this.routeManager.routes[0].specification).to.equal('/some.Route');
 
         });
 
@@ -534,7 +534,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given route specification - /someRoute/', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/');
+            expect(this.routeManager.routes[0].specification).to.equal('/someRoute/');
 
         });
 
@@ -659,7 +659,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given route specification - /someRoute/:varA/', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/');
+            expect(this.routeManager.routes[0].specification).to.equal('/someRoute/:varA/');
 
         });
 
@@ -747,7 +747,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given route specification - /someRoute/:varA/component/:varB', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/component/:varB');
+            expect(this.routeManager.routes[0].specification).to.equal('/someRoute/:varA/component/:varB');
 
         });
 
@@ -906,7 +906,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given route specification - /someRoute/:varA/component/:varB/', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/component/:varB/');
+            expect(this.routeManager.routes[0].specification).to.equal('/someRoute/:varA/component/:varB/');
 
         });
 
@@ -1063,7 +1063,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given route specification - /someRoute/*', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/*');
+            expect(this.routeManager.routes[0].specification).to.equal('/someRoute/*');
 
         });
 
@@ -1172,7 +1172,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with the given route specification - /someRoute/:varA/:varB/*', function () {
 
-            expect(this.routeManager.routes[0].routeSpec).to.equal('/someRoute/:varA/:varB/*');
+            expect(this.routeManager.routes[0].specification).to.equal('/someRoute/:varA/:varB/*');
 
         });
 
