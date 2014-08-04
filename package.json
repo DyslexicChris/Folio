@@ -1,8 +1,15 @@
 {
     "name": "Folio",
     "version": "0.0.1",
-    "author": "DyslexicChris",
+    "author": "DyslexicChris <npm@dyslexicchris.co.uk> (https://github.com/DyslexicChris)",
     "description": "A clustered node.js API framework inspired by express",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/DyslexicChris/Folio"
+    },
+    "bugs": {
+        "url": "https://github.com/DyslexicChris/Folio/issues"
+    },
     "scripts": {
         "test": "./node_modules/mocha/bin/mocha -R spec"
     },
@@ -14,5 +21,6 @@
         "chai": "1.9.0",
         "sinon": "1.10.3",
         "mockery": "1.4.0"
-    }
+    },
+    "license": "MIT"
 }
