@@ -4,6 +4,7 @@ Folio
 [![Build Status](https://travis-ci.org/DyslexicChris/Folio.svg?branch=master)](https://travis-ci.org/DyslexicChris/Folio)
 [![Dependency Status](https://david-dm.org/DyslexicChris/Folio.svg)](https://david-dm.org/DyslexicChris/Folio)
 [![devDependency Status](https://david-dm.org/DyslexicChris/Folio/dev-status.svg)](https://david-dm.org/DyslexicChris/Folio#info=devDependencies)
+[![Code Climate](https://codeclimate.com/github/DyslexicChris/Folio/badges/gpa.svg)](https://codeclimate.com/github/DyslexicChris/Folio)
 
 A clustered node.js API framework inspired by express
 
