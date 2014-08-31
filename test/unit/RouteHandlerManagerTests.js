@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var RouteHandlerManager = require('../lib/RouteHandlerManager');
+var RouteHandlerManager = require('../../lib/RouteHandlerManager');
 
 describe('RouteHandlerManager', function () {
 
@@ -94,6 +94,29 @@ describe('RouteHandlerManager', function () {
         it('Should be undefined', function () {
 
             expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteC.method, this.mockRouteC.specification)).to.be.undefined;
+
+        });
+
+    });
+
+    describe('On reset()', function(){
+
+        beforeEach(function () {
+
+            this.routeHandlerManager.addHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validHandlerA);
+            this.routeHandlerManager.addHandlerForRoute(this.mockRouteB.method, this.mockRouteB.specification, this.validHandlerB);
+
+            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification)).to.equal(this.validHandlerA);
+            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteB.method, this.mockRouteB.specification)).to.equal(this.validHandlerB);
+
+            this.routeHandlerManager.reset();
+
+        });
+
+        it('Should remove all route handlers', function(){
+
+            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification)).to.equal(undefined);
+            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteB.method, this.mockRouteB.specification)).to.equal(undefined);
 
         });
 

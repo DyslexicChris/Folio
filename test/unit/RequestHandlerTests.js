@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var _ = require('underscore');
-var RequestHandler = require('../lib/RequestHandler');
+var RequestHandler = require('../../lib/RequestHandler');
 
 describe('RequestHandler', function () {
 
@@ -71,7 +71,7 @@ describe('RequestHandler', function () {
 
                 this.spies.responseEnd = sinon.spy(this.mockResponse, 'end');
 
-                this.mockRouteManager.matchPath = function(method, path){
+                this.mockRouteManager.query = function(method, path){
                 };
 
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
@@ -109,7 +109,7 @@ describe('RequestHandler', function () {
                     specification: 'matchSpecification'
                 };
 
-                this.mockRouteManager.matchPath = function(method, path){
+                this.mockRouteManager.query = function(method, path){
                     if(method == 'test' && path == '/my-mock-url/match'){
                         return thisTest.mockMathedRoute;
                     }
@@ -245,7 +245,7 @@ describe('RequestHandler', function () {
                     specification: 'matchSpecification'
                 };
 
-                this.mockRouteManager.matchPath = function(method, path){
+                this.mockRouteManager.query = function(method, path){
                     if(method == 'test' && path == '/my-mock-url/match'){
                         return thisTest.mockMathedRoute;
                     }
@@ -362,7 +362,7 @@ describe('RequestHandler', function () {
                     specification: 'matchSpecification'
                 };
 
-                this.mockRouteManager.matchPath = function(method, path){
+                this.mockRouteManager.query = function(method, path){
                     if(method == 'test' && path == '/my-mock-url/match'){
                         return thisTest.mockMathedRoute;
                     }
@@ -476,7 +476,7 @@ describe('RequestHandler', function () {
                     specification: 'matchSpecification'
                 };
 
-                this.mockRouteManager.matchPath = function(method, path){
+                this.mockRouteManager.query = function(method, path){
                     if(method == 'test' && path == '/my-mock-url/match'){
                         return thisTest.mockMathedRoute;
                     }

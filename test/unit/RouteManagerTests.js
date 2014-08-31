@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var RouteManager = require('../lib/RouteManager');
+var RouteManager = require('../../lib/RouteManager');
 
 describe('RouteManager', function () {
 
@@ -430,7 +430,7 @@ describe('RouteManager', function () {
         describe('When a url is expected to match - GET /some.Route', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.routeManager.matchPath('GeT', '/some.Route');
+                this.matchedRoute = this.routeManager.query('GeT', '/some.Route');
             });
 
             it('Should return the expected route', function () {
@@ -447,7 +447,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('GET', '/some.Route/');
+                this.matchedRoute = this.routeManager.query('GET', '/some.Route/');
 
             });
 
@@ -465,7 +465,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('post', '/some.Route1');
+                this.matchedRoute = this.routeManager.query('post', '/some.Route1');
 
             });
 
@@ -482,7 +482,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/some.Route1');
+                this.matchedRoute = this.routeManager.query('get', '/some.Route1');
 
             });
 
@@ -498,7 +498,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('GET', '/some.Route/test');
+                this.matchedRoute = this.routeManager.query('GET', '/some.Route/test');
 
             });
 
@@ -554,7 +554,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('gEt', '/someRoute');
+                this.matchedRoute = this.routeManager.query('gEt', '/someRoute');
 
             });
 
@@ -572,7 +572,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('gEt', '/someRoute/');
+                this.matchedRoute = this.routeManager.query('gEt', '/someRoute/');
 
             });
 
@@ -590,7 +590,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute');
 
             });
 
@@ -606,7 +606,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('/someRoute1');
+                this.matchedRoute = this.routeManager.query('/someRoute1');
 
             });
 
@@ -622,7 +622,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('/someRoute/1');
+                this.matchedRoute = this.routeManager.query('/someRoute/1');
 
             });
 
@@ -678,7 +678,7 @@ describe('RouteManager', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456');
             });
 
             it('Should return the expected route', function () {
@@ -694,7 +694,7 @@ describe('RouteManager', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456/');
             });
 
             it('Should return the expected route', function () {
@@ -711,7 +711,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc/_456/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc/_456/');
 
             });
 
@@ -766,7 +766,7 @@ describe('RouteManager', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456/component/abc_12-3');
             });
 
             it('Should return the expected route', function () {
@@ -785,7 +785,7 @@ describe('RouteManager', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3/', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456/component/abc_12-3/');
             });
 
             it('Should return the expected route', function () {
@@ -805,7 +805,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/123-abc_456/component/abc_12-3/');
 
             });
 
@@ -821,7 +821,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
 
             });
 
@@ -837,7 +837,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute//component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute//component/abc_12-3/');
 
             });
 
@@ -853,7 +853,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute///component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute///component/abc_12-3/');
 
             });
 
@@ -869,7 +869,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
 
             });
 
@@ -925,7 +925,7 @@ describe('RouteManager', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456/component/abc_12-3');
             });
 
             it('Should return the expected route', function () {
@@ -944,7 +944,7 @@ describe('RouteManager', function () {
         describe('When a url is expected to match - POST /someRoute/123-abc_456/component/abc_12-3/', function () {
 
             beforeEach(function () {
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456/component/abc_12-3/');
             });
 
             it('Should return the expected route', function () {
@@ -964,7 +964,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/123-abc_456/component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/123-abc_456/component/abc_12-3/');
 
             });
 
@@ -980,7 +980,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/12$3-abc_456/component/abc_12-3');
 
             });
 
@@ -996,7 +996,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute//component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute//component/abc_12-3/');
 
             });
 
@@ -1012,7 +1012,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute///component/abc_12-3/');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute///component/abc_12-3/');
 
             });
 
@@ -1028,7 +1028,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
+                this.matchedRoute = this.routeManager.query('POST', '/someRoute/123-abc_456/component/abc_12-3/test');
 
             });
 
@@ -1084,7 +1084,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('PUT', '/someRoute/');
+                this.matchedRoute = this.routeManager.query('PUT', '/someRoute/');
 
             });
 
@@ -1102,7 +1102,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('PUT', '/someRoute/abc-123_456/test');
+                this.matchedRoute = this.routeManager.query('PUT', '/someRoute/abc-123_456/test');
 
             });
 
@@ -1120,7 +1120,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('put', '/someRoute');
+                this.matchedRoute = this.routeManager.query('put', '/someRoute');
 
             });
 
@@ -1136,7 +1136,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('post', '/someRoute');
+                this.matchedRoute = this.routeManager.query('post', '/someRoute');
 
             });
 
@@ -1192,7 +1192,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc/');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/abc-123_456/123_456-abc/');
 
             });
 
@@ -1213,7 +1213,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc/abc');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/abc-123_456/123_456-abc/abc');
 
             });
 
@@ -1234,7 +1234,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc/abc/');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/abc-123_456/123_456-abc/abc/');
 
             });
 
@@ -1255,7 +1255,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/123_456-abc');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/abc-123_456/123_456-abc');
 
             });
 
@@ -1271,7 +1271,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456/');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/abc-123_456/');
 
             });
 
@@ -1287,7 +1287,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute/abc-123_456//test');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute/abc-123_456//test');
 
             });
 
@@ -1303,7 +1303,7 @@ describe('RouteManager', function () {
 
             beforeEach(function () {
 
-                this.matchedRoute = this.routeManager.matchPath('get', '/someRoute//123_456-abc/test/case');
+                this.matchedRoute = this.routeManager.query('get', '/someRoute//123_456-abc/test/case');
 
             });
 
@@ -1312,6 +1312,27 @@ describe('RouteManager', function () {
                 expect(this.matchedRoute).to.equal(undefined);
 
             });
+
+        });
+
+    });
+
+    describe('On reset()', function(){
+
+        beforeEach(function () {
+
+            this.routeManager.addRoute('GET', '/some.Route');
+            this.routeManager.addRoute('POST', '/some.Route');
+            this.routeManager.addRoute('PUT', '/some.Put.Route');
+            expect(this.routeManager.routes.length).to.equal(3);
+
+            this.routeManager.reset();
+
+        });
+
+        it('Should remove all route definitions', function () {
+
+            expect(this.routeManager.routes.length).to.equal(0);
 
         });
 

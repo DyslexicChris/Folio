@@ -1,7 +1,7 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var _ = require('underscore');
-var RouteCanister = require('../lib/RouteCanister');
+var RouteCanister = require('../../lib/RouteCanister');
 
 describe('RouteCanister', function () {
 

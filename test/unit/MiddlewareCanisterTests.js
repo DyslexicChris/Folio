@@ -1,7 +1,7 @@
 var _ = require('underscore');
 var expect = require('chai').expect;
 var sinon = require('sinon');
-var MiddlewareCanister = require('../lib/MiddlewareCanister');
+var MiddlewareCanister = require('../../lib/MiddlewareCanister');
 
 describe('MiddlewareCanister', function () {
 

@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var RouteMiddlewareManager = require('../lib/RouteMiddlewareManager');
+var RouteMiddlewareManager = require('../../lib/RouteMiddlewareManager');
 
 describe('RouteMiddlewareManager', function () {
 
@@ -318,6 +318,29 @@ describe('RouteMiddlewareManager', function () {
                 }).to.throw('Middleware is not a function');
 
             });
+
+        });
+
+    });
+
+    describe('On reset()', function(){
+
+        beforeEach(function(){
+
+            this.routeMiddlewareManager.addMiddlewareForMethod('GET', this.validMiddlewareA);
+            this.routeMiddlewareManager.addMiddlewareForRoute('POST', '/test-specification', this.validMiddlewareB);
+
+            expect(this.routeMiddlewareManager.getMiddlewareForMethod('GET')).to.deep.equal([this.validMiddlewareA]);
+            expect(this.routeMiddlewareManager.getMiddlewareForRoute('POST', '/test-specification')).to.deep.equal([this.validMiddlewareB]);
+
+            this.routeMiddlewareManager.reset();
+
+        });
+
+        it('Should remove all middleware', function(){
+
+            expect(this.routeMiddlewareManager.getMiddlewareForMethod('GET')).to.deep.equal([]);
+            expect(this.routeMiddlewareManager.getMiddlewareForRoute('POST', '/test-specification')).to.deep.equal([]);
 
         });
 

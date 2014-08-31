@@ -33,7 +33,7 @@ describe('HttpServer', function () {
         this.mockServer = {
             listen: function () {
             },
-            close: function(){
+            close: function () {
             }
         };
 
@@ -43,10 +43,13 @@ describe('HttpServer', function () {
         this.mockHttp = {
             createServer: function () {
                 return thisTest.mockServer;
+            },
+            close: function(){
             }
         };
 
         this.spies.mockHttpCreateServer = sinon.spy(this.mockHttp, 'createServer');
+        this.spies.mockHttpClose = sinon.spy(this.mockHttp, 'close');
 
         this.mockLogger = {
             log: function () {
@@ -54,6 +57,9 @@ describe('HttpServer', function () {
             error: function () {
             },
             warn: function () {
+            },
+            getLogger: function () {
+                return this;
             }
         };
 
@@ -66,14 +72,14 @@ describe('HttpServer', function () {
         });
 
 
-        mockery.registerAllowable('../lib/HttpServer', true);
+        mockery.registerAllowable('../../lib/HttpServer', true);
         mockery.registerAllowable('underscore');
         mockery.registerMock('domain', this.mockDomain);
         mockery.registerMock('http', this.mockHttp);
         mockery.registerMock('./Logger', this.mockLogger);
 
 
-        this.HttpServer = require('../lib/HttpServer');
+        this.HttpServer = require('../../lib/HttpServer');
 
 
     });
@@ -88,9 +94,10 @@ describe('HttpServer', function () {
 
         beforeEach(function () {
 
-            this.mockRequestHandler =  {
+            this.mockRequestHandler = {
                 object: 'mockRequestHandler',
-                handle: function(){}
+                handle: function () {
+                }
             };
 
             this.spies.requestHandlerHandle = sinon.spy(this.mockRequestHandler, 'handle');
@@ -110,19 +117,52 @@ describe('HttpServer', function () {
 
         });
 
-        describe('On start(port)', function () {
+        describe('On start(port, callback)', function () {
 
             beforeEach(function () {
 
-                this.httpServer.start(1234);
+                this.startCallback = function () {
+                };
+                this.httpServer.start(1234, this.startCallback);
 
             });
 
-            it('Should create a server an have it listen on the given port (1234)', function () {
+            it('Should create a server, have it listen on the given port and supply it with a completion callback', function () {
 
                 expect(this.mockHttp.createServer.callCount).to.equal(1);
                 expect(this.mockServer.listen.callCount).to.equal(1);
                 expect(this.mockServer.listen.getCall(0).args[0]).to.equal(1234);
+                expect(this.mockServer.listen.getCall(0).args[1]).to.equal(this.startCallback);
+
+            });
+
+            describe('On stop(callback)', function(){
+
+                beforeEach(function(){
+
+                    this.stopCallback = function(){
+                    };
+
+                    this.spies.stopServerCallback = sinon.spy(this, 'stopCallback');
+
+                    this.httpServer.stop(this.stopCallback);
+
+                });
+
+                it('Should close the http server', function(){
+
+                    expect(this.mockServer.close.callCount).to.equal(1);
+
+                });
+
+                it('Should call the given callback when done', function(){
+
+                    var wrapperCallback = this.mockServer.close.getCall(0).args[0];
+                    wrapperCallback();
+
+                    expect(this.stopCallback.callCount).to.equal(1);
+
+                });
 
             });
 
@@ -137,9 +177,9 @@ describe('HttpServer', function () {
 
                     this.mockResponse = {
                         object: 'mockResponse',
-                        writeHead: function(){
+                        writeHead: function () {
                         },
-                        end: function(){
+                        end: function () {
                         }
                     };
 
@@ -189,9 +229,9 @@ describe('HttpServer', function () {
 
                 });
 
-                describe('When the error callback is called', function(){
+                describe('When the error callback is called', function () {
 
-                    beforeEach(function(){
+                    beforeEach(function () {
 
                         var thisTest = this;
 
@@ -199,7 +239,7 @@ describe('HttpServer', function () {
                             message: 'test',
                             stack: 'testStack',
                             domain: {
-                                members:[
+                                members: [
                                     'test',
                                     thisTest.mockResponse,
                                     thisTest.mockServer
@@ -211,13 +251,13 @@ describe('HttpServer', function () {
                         callback(domainError);
                     });
 
-                    it('Should gracefully shut down the server', function(){
+                    it('Should gracefully shut down the server', function () {
 
                         expect(this.mockServer.close.callCount).to.equal(1);
 
                     });
 
-                    it('Should send a 500 response', function(){
+                    it('Should send a 500 response', function () {
 
                         expect(this.mockResponse.writeHead.callCount).to.equal(1);
                         expect(this.mockResponse.writeHead.getCall(0).args).to.deep.equal([500, {'Connection': 'close'}]);

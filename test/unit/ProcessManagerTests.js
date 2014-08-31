@@ -22,6 +22,9 @@ describe('ProcessManager', function () {
 
         this.mockLogger = {
             log: function(){
+            },
+            getLogger: function () {
+                return this;
             }
         };
 
@@ -38,14 +41,14 @@ describe('ProcessManager', function () {
         });
 
 
-        mockery.registerAllowable('../lib/ProcessManager', true);
+        mockery.registerAllowable('../../lib/ProcessManager', true);
         mockery.registerAllowable('underscore');
         mockery.registerMock('cluster', this.mockCluster);
         mockery.registerMock('os', this.mockOS);
         mockery.registerMock('./Logger', this.mockLogger);
 
 
-        this.ProcessManager = require('../lib/ProcessManager');
+        this.ProcessManager = require('../../lib/ProcessManager');
 
 
     });
@@ -70,7 +73,7 @@ describe('ProcessManager', function () {
 
         });
 
-        describe('On clusterize(clusterizedFunction) (with a CPU count of 2)', function(){
+        describe('On cluster(clusterizedFunction) (with a CPU count of 2)', function(){
 
             describe('When process is master', function(){
 
@@ -84,7 +87,7 @@ describe('ProcessManager', function () {
 
                     this.spies.clusterizedFunction = sinon.spy(this, 'clusterizedFunction');
 
-                    this.processManager.clusterize(this.clusterizedFunction);
+                    this.processManager.cluster(this.clusterizedFunction);
 
                 });
 
@@ -140,7 +143,7 @@ describe('ProcessManager', function () {
 
                     this.spies.clusterizedFunction = sinon.spy(this, 'clusterizedFunction');
 
-                    this.processManager.clusterize(this.clusterizedFunction);
+                    this.processManager.cluster(this.clusterizedFunction);
 
                 });
 
