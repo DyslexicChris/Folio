@@ -441,6 +441,14 @@ describe('RouteManager', function () {
 
             });
 
+            it('Should cache the path route mapping', function () {
+
+                var cachedRoute = this.routeManager._lookupCachedRouteForMethodAndPath('GET', '/some.Route');
+                expect(cachedRoute.method).to.equal('get');
+                expect(cachedRoute.specification).to.equal('/some.Route');
+
+            });
+
         });
 
         describe('When a url is expected to match - GET /some.Route/', function () {
@@ -456,6 +464,14 @@ describe('RouteManager', function () {
                 expect(this.matchedRoute.specification).to.equal('/some.Route');
                 expect(this.matchedRoute.method).to.equal('get');
                 expect(this.matchedRoute.params).to.deep.equal({});
+
+            });
+
+            it('Should cache the path route mapping', function () {
+
+                var cachedRoute = this.routeManager._lookupCachedRouteForMethodAndPath('get', '/some.Route/');
+                expect(cachedRoute.method).to.equal('get');
+                expect(cachedRoute.specification).to.equal('/some.Route');
 
             });
 
@@ -1317,13 +1333,105 @@ describe('RouteManager', function () {
 
     });
 
-    describe('On reset()', function(){
+
+    describe('When requesting multiple paths', function(){
+
+        beforeEach(function(){
+
+            this.routeManager.addRoute('GET', '/some.Route1');
+            this.routeManager.addRoute('PUT', '/some.Route1');
+            this.routeManager.addRoute('GET', '/some.Route2');
+            this.routeManager.addRoute('GET', '/some.Route3');
+
+            this.routeManager.query('get', '/some.Route');
+            this.routeManager.query('get', '/some.Route');
+            this.routeManager.query('get', '/some.Route');
+            this.routeManager.query('get', '/some.Route1');
+            this.routeManager.query('get', '/some.Route1');
+            this.routeManager.query('get', '/some.Route1');
+            this.routeManager.query('put', '/some.Route1');
+            this.routeManager.query('put', '/some.Route1');
+            this.routeManager.query('put', '/some.Route1');
+            this.routeManager.query('get', '/some.Route2');
+            this.routeManager.query('get', '/some.Route2');
+            this.routeManager.query('get', '/some.Route2');
+            this.routeManager.query('get', '/some.Route3');
+            this.routeManager.query('get', '/some.Route3');
+            this.routeManager.query('get', '/some.Route3');
+
+        });
+
+        it('Should cache the route mapping for requested routes that exist, but not for those that do not exist', function(){
+
+            this.cachedRoutes = [];
+            for(var routeKey in this.routeManager._routeMapCache){
+                this.cachedRoutes.push(routeKey);
+            }
+
+            expect(this.cachedRoutes.length).to.equal(4);
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[0]].specification).to.equal('/some.Route1');
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[0]].method).to.equal('get');
+
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[1]].specification).to.equal('/some.Route1');
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[1]].method).to.equal('put');
+
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[2]].specification).to.equal('/some.Route2');
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[2]].method).to.equal('get');
+
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[3]].specification).to.equal('/some.Route3');
+            expect(this.routeManager._routeMapCache[this.cachedRoutes[3]].method).to.equal('get');
+
+        });
+
+        it('Should return the correct routes when queried with valid paths', function(){
+
+            expect(this.routeManager.query('get', '/some.Route')).to.equal(undefined);
+
+            expect(this.routeManager.query('get', '/some.Route1').specification).to.equal('/some.Route1');
+            expect(this.routeManager.query('get', '/some.Route1').method).to.equal('get');
+
+            expect(this.routeManager.query('put', '/some.Route1').specification).to.equal('/some.Route1');
+            expect(this.routeManager.query('put', '/some.Route1').method).to.equal('put');
+
+            expect(this.routeManager.query('get', '/some.Route2').specification).to.equal('/some.Route2');
+            expect(this.routeManager.query('get', '/some.Route2').method).to.equal('get');
+
+            expect(this.routeManager.query('get', '/some.Route3').specification).to.equal('/some.Route3');
+            expect(this.routeManager.query('get', '/some.Route3').method).to.equal('get');
+
+        });
+
+        describe('Adding a new route after cached route mappings have been created', function(){
+
+            beforeEach(function(){
+
+                this.routeManager.addRoute('GET', '/some.Route5');
+
+            });
+
+            it('Should reset the route mapping cache', function(){
+
+                this.cachedRoutes = [];
+                for(var routeKey in this.routeManager._routeMapCache){
+                    this.cachedRoutes.push(routeKey);
+                }
+
+                expect(this.cachedRoutes.length).to.equal(0);
+
+            });
+
+        });
+
+    });
+
+    describe('On reset()', function () {
 
         beforeEach(function () {
 
             this.routeManager.addRoute('GET', '/some.Route');
             this.routeManager.addRoute('POST', '/some.Route');
             this.routeManager.addRoute('PUT', '/some.Put.Route');
+
             expect(this.routeManager.routes.length).to.equal(3);
 
             this.routeManager.reset();
