@@ -28,6 +28,9 @@ describe('Folio', function () {
         this.RequestHandler = function () {
             this.object = 'requestHandler'
         };
+        this.ResponseDecorator = function(){
+            this.object = 'responseDecorator';
+        };
         this.HttpServer = function () {
             this.object = 'httpServer'
         };
@@ -113,6 +116,7 @@ describe('Folio', function () {
         mockery.registerMock('./RequestHandler', this.RequestHandler);
         mockery.registerMock('./ProcessManager', this.ProcessManager);
         mockery.registerMock('./middleware/JSONBodyParserFactory', this.JSONBodyParserFactory);
+        mockery.registerMock('./decorators/ResponseDecorator', this.ResponseDecorator);
 
         this.Folio = require('../../lib/Folio');
 
@@ -155,6 +159,12 @@ describe('Folio', function () {
         it('Should have a request handler', function () {
 
             expect(this.folio._requestHandler).to.not.be.undefined;
+
+        });
+
+        it('Should have a response decorator', function(){
+
+            expect(this.folio._responseDecorator).to.not.be.undefined;
 
         });
 

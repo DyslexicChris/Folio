@@ -54,6 +54,20 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
+            it('Should return an array of middleware when asked - even when the method casing is different than defined', function () {
+
+                this.routeMiddlewareManager.addMiddlewareForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validMiddlewareA);
+                expect(this.routeMiddlewareManager.getMiddlewareForRoute('gEt', this.mockRouteA.specification)).to.deep.equal([this.validMiddlewareA]);
+
+            });
+
+            it('Should return an empty array of middleware when asked, if the path casing does not match that of the specification', function () {
+
+                this.routeMiddlewareManager.addMiddlewareForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validMiddlewareA);
+                expect(this.routeMiddlewareManager.getMiddlewareForRoute(this.mockRouteA.method, '/testa')).to.deep.equal([]);
+
+            });
+
         });
 
         describe('Multiple middleware for a single route', function () {
@@ -66,9 +80,9 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
-            it('Should return the correct middleware array when asked', function () {
+            it('Should return the correct middleware array when asked (case insensitive method)', function () {
 
-                expect(this.routeMiddlewareManager.getMiddlewareForRoute(this.mockRouteA.method, this.mockRouteA.specification)).to.deep.equal([this.validMiddlewareA, this.validMiddlewareB, this.validMiddlewareC]);
+                expect(this.routeMiddlewareManager.getMiddlewareForRoute('gEt', this.mockRouteA.specification)).to.deep.equal([this.validMiddlewareA, this.validMiddlewareB, this.validMiddlewareC]);
 
             });
 
@@ -85,10 +99,10 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
-            it('Should return the correct middleware arrays when asked', function () {
+            it('Should return the correct middleware arrays when asked (case insensitive method)', function () {
 
-                expect(this.routeMiddlewareManager.getMiddlewareForRoute(this.mockRouteA.method, this.mockRouteA.specification)).to.deep.equal([this.validMiddlewareA, this.validMiddlewareB]);
-                expect(this.routeMiddlewareManager.getMiddlewareForRoute(this.mockRouteB.method, this.mockRouteB.specification)).to.deep.equal([this.validMiddlewareC, this.validMiddlewareD]);
+                expect(this.routeMiddlewareManager.getMiddlewareForRoute('gEt', this.mockRouteA.specification)).to.deep.equal([this.validMiddlewareA, this.validMiddlewareB]);
+                expect(this.routeMiddlewareManager.getMiddlewareForRoute('pOSt', this.mockRouteB.specification)).to.deep.equal([this.validMiddlewareC, this.validMiddlewareD]);
 
             });
 
@@ -112,7 +126,7 @@ describe('RouteMiddlewareManager', function () {
 
     describe('When adding middleware based on method', function () {
 
-        describe('A valid middleware - all methods', function () {
+        describe('A valid middleware - all methods (global middleware)', function () {
 
             it('Should not throw an exception', function () {
 
@@ -145,10 +159,10 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
-            it('Should return an array of middleware when asked', function () {
+            it('Should return an array of middleware when asked (case insensitive)', function () {
 
                 this.routeMiddlewareManager.addMiddlewareForMethod('get', this.validMiddlewareA);
-                expect(this.routeMiddlewareManager.getMiddlewareForMethod('get')).to.deep.equal([this.validMiddlewareA]);
+                expect(this.routeMiddlewareManager.getMiddlewareForMethod('gEt')).to.deep.equal([this.validMiddlewareA]);
 
             });
 
@@ -166,10 +180,10 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
-            it('Should return an array of middleware when asked', function () {
+            it('Should return an array of middleware when asked (case insensitive)', function () {
 
                 this.routeMiddlewareManager.addMiddlewareForMethod('post', this.validMiddlewareB);
-                expect(this.routeMiddlewareManager.getMiddlewareForMethod('post')).to.deep.equal([this.validMiddlewareB]);
+                expect(this.routeMiddlewareManager.getMiddlewareForMethod('pOst')).to.deep.equal([this.validMiddlewareB]);
 
             });
 
@@ -187,10 +201,10 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
-            it('Should return an array of middleware when asked', function () {
+            it('Should return an array of middleware when asked (case insensitive)', function () {
 
                 this.routeMiddlewareManager.addMiddlewareForMethod('put', this.validMiddlewareA);
-                expect(this.routeMiddlewareManager.getMiddlewareForMethod('put')).to.deep.equal([this.validMiddlewareA]);
+                expect(this.routeMiddlewareManager.getMiddlewareForMethod('pUt')).to.deep.equal([this.validMiddlewareA]);
 
             });
 
@@ -208,10 +222,10 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
-            it('Should return an array of middleware when asked', function () {
+            it('Should return an array of middleware when asked (case insensitive)', function () {
 
                 this.routeMiddlewareManager.addMiddlewareForMethod('delete', this.validMiddlewareA);
-                expect(this.routeMiddlewareManager.getMiddlewareForMethod('delete')).to.deep.equal([this.validMiddlewareA]);
+                expect(this.routeMiddlewareManager.getMiddlewareForMethod('dElete')).to.deep.equal([this.validMiddlewareA]);
 
             });
 
@@ -229,10 +243,10 @@ describe('RouteMiddlewareManager', function () {
 
             });
 
-            it('Should return an array of middleware when asked', function () {
+            it('Should return an array of middleware when asked (case insensitive)', function () {
 
                 this.routeMiddlewareManager.addMiddlewareForMethod('other', this.validMiddlewareB);
-                expect(this.routeMiddlewareManager.getMiddlewareForMethod('other')).to.deep.equal([this.validMiddlewareB]);
+                expect(this.routeMiddlewareManager.getMiddlewareForMethod('oTher')).to.deep.equal([this.validMiddlewareB]);
 
             });
 

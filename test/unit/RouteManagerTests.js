@@ -417,7 +417,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/some\.Route(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/some\.Route(?:\/)?$/.toString());
 
         });
 
@@ -556,7 +556,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute(?:\/)?$/.toString());
 
         });
 
@@ -681,7 +681,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)(?:\/)?$/.toString());
 
         });
 
@@ -769,7 +769,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/.toString());
 
         });
 
@@ -928,7 +928,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/.toString());
 
         });
 
@@ -1085,7 +1085,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, where the slash must be present before the wildcard (even if empty), but with an optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/[a-z0-9%\-_\.\/]*(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/[a-z0-9%\-_\.\/]*(?:\/)?$/.toString());
 
         });
 
@@ -1194,7 +1194,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, where the slash must be present before the wildcard (even if empty), but with an optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/([a-z0-9%\-_\.]+)\/[a-z0-9%\-_\.\/]*(?:\/)?$/i.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/([a-z0-9%\-_\.]+)\/[a-z0-9%\-_\.\/]*(?:\/)?$/.toString());
 
         });
 
@@ -1383,21 +1383,24 @@ describe('RouteManager', function () {
 
         });
 
-        it('Should return the correct routes when queried with valid paths', function(){
+        it('Should return the correct routes when queried with valid paths (case sensitive) and valid methods (case insensitive)', function(){
 
             expect(this.routeManager.query('get', '/some.Route')).to.equal(undefined);
+            expect(this.routeManager.query('get', '/soMe.Route1')).to.equal(undefined);
+            expect(this.routeManager.query('get', '/soME.Route2')).to.equal(undefined);
 
             expect(this.routeManager.query('get', '/some.Route1').specification).to.equal('/some.Route1');
-            expect(this.routeManager.query('get', '/some.Route1').method).to.equal('get');
+            expect(this.routeManager.query('gEt', '/some.Route1').specification).to.equal('/some.Route1');
+            expect(this.routeManager.query('geT', '/some.Route1').method).to.equal('get');
 
             expect(this.routeManager.query('put', '/some.Route1').specification).to.equal('/some.Route1');
-            expect(this.routeManager.query('put', '/some.Route1').method).to.equal('put');
+            expect(this.routeManager.query('puT', '/some.Route1').method).to.equal('put');
 
             expect(this.routeManager.query('get', '/some.Route2').specification).to.equal('/some.Route2');
-            expect(this.routeManager.query('get', '/some.Route2').method).to.equal('get');
+            expect(this.routeManager.query('gEt', '/some.Route2').method).to.equal('get');
 
-            expect(this.routeManager.query('get', '/some.Route3').specification).to.equal('/some.Route3');
-            expect(this.routeManager.query('get', '/some.Route3').method).to.equal('get');
+            expect(this.routeManager.query('GET', '/some.Route3').specification).to.equal('/some.Route3');
+            expect(this.routeManager.query('gET', '/some.Route3').method).to.equal('get');
 
         });
 
@@ -1421,6 +1424,38 @@ describe('RouteManager', function () {
             });
 
         });
+
+        describe('Case sensitivity', function(){
+
+            beforeEach(function(){
+
+                this.routeManager.addRoute('GET', '/some.Route');
+
+            });
+
+            describe('When querying a path using the correct method but different case that originally defined', function(){
+
+                it('Should return the route', function(){
+
+                    expect(this.routeManager.query('gEt', '/some.Route').specification).to.equal('/some.Route');
+                    expect(this.routeManager.query('gEt', '/some.Route').method).to.equal('get');
+
+                });
+
+            });
+
+            describe('When querying a path using the correct path but different casing than the specification', function(){
+
+                it('Should not return the route', function(){
+
+                    expect(this.routeManager.query('GET', '/soMe.Route')).to.equal(undefined);
+
+                });
+
+            });
+
+        });
+
 
     });
 

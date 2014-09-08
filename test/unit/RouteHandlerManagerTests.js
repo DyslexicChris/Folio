@@ -53,6 +53,20 @@ describe('RouteHandlerManager', function () {
 
             });
 
+            it('Should return the handler when asked - method should be case insensitive', function () {
+
+                this.routeHandlerManager.addHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validHandlerA);
+                expect(this.routeHandlerManager.getHandlerForRoute('geT', this.mockRouteA.specification)).to.equal(this.validHandlerA);
+
+            });
+
+            it('Should not return a handler if the path casing does not match the specification\'s', function () {
+
+                this.routeHandlerManager.addHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validHandlerA);
+                expect(this.routeHandlerManager.getHandlerForRoute('get', '/testa')).to.equal(undefined);
+
+            });
+
         });
 
         describe('Multiple handlers', function () {

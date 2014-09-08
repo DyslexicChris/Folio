@@ -72,6 +72,22 @@ describe('Basic route definition and handlers', function () {
 
         });
 
+        describe('On GET /HELLO-world (incorrect casing for existing route)', function () {
+
+            beforeEach(function (done) {
+
+                test.getPath('/HELLO-world', this, done);
+
+            });
+
+            it('Should respond with a 404', function () {
+
+                test.assertStatusCode(404, this);
+
+            });
+
+        });
+
     });
 
     describe('With two routes defined with specification GET /hello-world and POST /hello-world with handlers that respond with 200 and 204 status codes respectively', function () {
