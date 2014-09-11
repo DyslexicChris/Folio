@@ -28,9 +28,18 @@ describe('Folio', function () {
         this.RequestHandler = function () {
             this.object = 'requestHandler'
         };
-        this.ResponseDecorator = function(){
+
+        this.ResponseDecorator = function () {
             this.object = 'responseDecorator';
         };
+
+        this.ResponseDecorator.prototype.addDecoration = function () {
+        };
+
+        this.SendObjectDecoration = function () {
+            this.object = 'sendObjectDecorator'
+        };
+
         this.HttpServer = function () {
             this.object = 'httpServer'
         };
@@ -50,12 +59,13 @@ describe('Folio', function () {
         this.ProcessManager.prototype.cluster = function () {
         };
 
-        this.JSONBodyParserMiddleware = function(){};
-
-        this.JSONBodyParserFactory = function() {
+        this.JSONBodyParserMiddleware = function () {
         };
 
-        this.JSONBodyParserFactory.prototype.newMiddleware = function(){
+        this.JSONBodyParserFactory = function () {
+        };
+
+        this.JSONBodyParserFactory.prototype.newMiddleware = function () {
             return thisTest.JSONBodyParserMiddleware;
         };
 
@@ -96,6 +106,7 @@ describe('Folio', function () {
         this.spies.httpServerStop = sinon.spy(this.HttpServer.prototype, 'stop');
         this.spies.processManagerClusterize = sinon.spy(this.ProcessManager.prototype, 'cluster');
         this.spies.jsonBodyParserFactoryNewMiddleware = sinon.spy(this.JSONBodyParserFactory.prototype, 'newMiddleware');
+        this.spies.responseDecoratorAddDecorator = sinon.spy(this.ResponseDecorator.prototype, 'addDecoration');
 
         mockery.deregisterAll();
 
@@ -117,6 +128,7 @@ describe('Folio', function () {
         mockery.registerMock('./ProcessManager', this.ProcessManager);
         mockery.registerMock('./middleware/JSONBodyParserFactory', this.JSONBodyParserFactory);
         mockery.registerMock('./decorators/ResponseDecorator', this.ResponseDecorator);
+        mockery.registerMock('./decorators/response-decorations/SendObjectDecoration', this.SendObjectDecoration);
 
         this.Folio = require('../../lib/Folio');
 
@@ -162,9 +174,22 @@ describe('Folio', function () {
 
         });
 
-        it('Should have a response decorator', function(){
+        it('Should have a response decorator', function () {
 
             expect(this.folio._responseDecorator).to.not.be.undefined;
+
+        });
+
+        it('Should have a \'send object decoration\'', function () {
+
+            expect(this.folio._sendObjectDecoration).to.not.be.undefined;
+
+        });
+
+        it('Should add the \'send object decoration\' to the response decorator', function () {
+
+            expect(this.folio._responseDecorator.addDecoration.callCount).to.equal(1);
+            expect(this.folio._responseDecorator.addDecoration.getCall(0).args).to.deep.equal([this.folio._sendObjectDecoration]);
 
         });
 
@@ -459,21 +484,21 @@ describe('Folio', function () {
 
         });
 
-        describe('On jsonBodyParser()', function(){
+        describe('On jsonBodyParser()', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
 
                 this.middleware = this.folio.jsonBodyParser();
 
             });
 
-            it('Should delegate to the JSON Body Parser factory', function(){
+            it('Should delegate to the JSON Body Parser factory', function () {
 
                 expect(this.JSONBodyParserFactory.prototype.newMiddleware.callCount).to.equal(1);
 
             });
 
-            it('Return the middleware returned by the JSON Body Parser factory', function(){
+            it('Return the middleware returned by the JSON Body Parser factory', function () {
 
                 expect(this.middleware).to.deep.equal(this.JSONBodyParserMiddleware);
 
