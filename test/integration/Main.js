@@ -29,5 +29,6 @@ describe('The Folio Framework', function(){
     require('./BasicRouteDefinitionsAndHandlersTests.js');
     require('./BasicMiddlewareTests.js');
     require('./JSONBodyParserMiddlewareTests.js');
+    require('./SendObjectDecorationTests.js');
 
 });
