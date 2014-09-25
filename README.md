@@ -21,7 +21,7 @@ var myApp = new Folio();
  * Define a route for GET /hello-world/:variableA/with/:variableB where
  * :variableA and :variableB are variable components. The route is to use
  * three middleware and should use the given handler.
- * /
+ */
 myApp.get('/hello-world/:variableA/with/:variableB')
 	.middleware(myMiddlewareA, myMiddlewareB, myMiddlewareC)
 	.handler(myHelloWorldHandler);
@@ -32,10 +32,8 @@ myApp.get('/hello-world/:variableA/with/:variableB')
  */
 myApp.post('/hello-world').handler(myPostHandler);
 
-
 // Specify a set of middleware to use for all routes.
 myApp.use(myGlobalMiddlewareA, myGlobalMiddlewareB).forAllRoutes();
-
 
 // Specify a set of middleware to use for GET routes.
 myApp.use(myGlobalPostMiddleware).forAllPosts();
