@@ -7,9 +7,64 @@ Folio
 [![Code Climate](https://codeclimate.com/github/DyslexicChris/Folio/badges/gpa.svg)](https://codeclimate.com/github/DyslexicChris/Folio)
 [![Coverage Status](https://img.shields.io/coveralls/DyslexicChris/Folio.svg)](https://coveralls.io/r/DyslexicChris/Folio)
 
-A clustered node.js API framework inspired by express
+A fluent Node.js HTTP API framework inspired by express
 
-Its a work in progress.
+# Example
+```javascript
+var Folio = require('folio.js');
+
+var myApp = new Folio();
+
+myApp.get('/hello-world/:variableA/with/:variableB')
+	.middleware(myMiddlewareA, myMiddlewareB, myMiddlewareC)
+	.handler(myHelloWorldHandler);
+
+myApp.post('/hello-world').handler(myPostHandler);
+
+myApp.use(myGlobalMiddlewareA, myGlobalMiddlewareB).forAllRoutes();
+
+myApp.use(myGlobalPostMiddleware).forAllPosts();
+
+myapp.start(3000);
+```
+
+## Middleware Functions
+
+```javascript
+var exampleMiddleware = function(request, response, next) {
+	
+	/* 
+	 * Do what the middleware needs to do, then call next() if the
+	 * handling chain should be continued - otherwise terminate
+	 * the response.
+	 */
+
+	if(authorised(request)) {
+		// Continue with handling chain.
+		next():
+	} else {
+		// Terminate response.
+		response.statusCode = 401;
+		response.end();
+	}
+
+};
+```
+
+## Handler Functions
+
+```javascript
+var exampleHandler = function(request, response) {
+	
+	var variableA = request.params['variableA'];
+	var variableB = request.params['variableB'];
+
+	var myObject = myDatabase.findMyObject(variableA, variableB);
+
+	response.send(myObject);
+
+};
+```
 
 # License
 ```
