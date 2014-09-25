@@ -9,22 +9,38 @@ Folio
 
 A fluent Node.js HTTP API framework inspired by express
 
-# Example
+# Basic Example
 ```javascript
+// Require folio.js
 var Folio = require('folio.js');
 
+// Create a new folio.js application
 var myApp = new Folio();
 
+/*
+ * Define a route for GET /hello-world/:variableA/with/:variableB where
+ * :variableA and :variableB are variable components. The route is to use
+ * three middleware and should use the given handler.
+ * /
 myApp.get('/hello-world/:variableA/with/:variableB')
 	.middleware(myMiddlewareA, myMiddlewareB, myMiddlewareC)
 	.handler(myHelloWorldHandler);
 
+/*
+ * Define a route for POST /hello-world with no route specific middleware,
+ * but given a handler.
+ */
 myApp.post('/hello-world').handler(myPostHandler);
 
+
+// Specify a set of middleware to use for all routes.
 myApp.use(myGlobalMiddlewareA, myGlobalMiddlewareB).forAllRoutes();
 
+
+// Specify a set of middleware to use for GET routes.
 myApp.use(myGlobalPostMiddleware).forAllPosts();
 
+// Start the server, and have it listen for requests on port 3000.
 myapp.start(3000);
 ```
 
@@ -47,7 +63,6 @@ var exampleMiddleware = function(request, response, next) {
 		response.statusCode = 401;
 		response.end();
 	}
-
 };
 ```
 
@@ -62,7 +77,6 @@ var exampleHandler = function(request, response) {
 	var myObject = myDatabase.findMyObject(variableA, variableB);
 
 	response.send(myObject);
-
 };
 ```
 
