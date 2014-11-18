@@ -1,11 +1,65 @@
 var expect = require('chai').expect;
-var RouteManager = require('../../lib/RouteManager');
+var mockery = require('mockery');
+var sinon = require('sinon');
+var _ = require('underscore');
 
 describe('RouteManager', function () {
 
     beforeEach(function () {
 
+        this.mockCacheInstance = {
+            get: function () {
+            },
+            put: function () {
+            },
+            reset: function () {
+            }
+        };
+
+        this.mockGuildCache = {
+            cacheWithSize: function () {
+                return this.mockCacheInstance;
+            }.bind(this)
+        };
+
+
+        this.spies = {};
+        this.spies.cacheGet = sinon.spy(this.mockCacheInstance, 'get');
+        this.spies.cachePut = sinon.spy(this.mockCacheInstance, 'put');
+        this.spies.cacheReset = sinon.spy(this.mockCacheInstance, 'reset');
+        this.spies.guildCacheCacheWithSize = sinon.spy(this.mockGuildCache, 'cacheWithSize');
+
+        mockery.deregisterAll();
+
+        mockery.enable({
+            warnOnReplace: false,
+            useCleanCache: true
+        });
+
+        mockery.registerAllowable('underscore');
+        mockery.registerAllowable('../../lib/RouteManager');
+        mockery.registerMock('guild', this.mockGuildCache);
+
+        var RouteManager = require('../../lib/RouteManager');
         this.routeManager = new RouteManager();
+
+    });
+
+    afterEach(function () {
+        _.each(this.spies, function (spy) {
+            spy.restore();
+        })
+    });
+
+    describe('On init', function(){
+
+        it('Should create a route cache of size 1000', function(){
+
+            expect(this.mockGuildCache.cacheWithSize.callCount).to.equal(1);
+            expect(this.mockGuildCache.cacheWithSize.getCall(0).args).to.deep.equal([1000]);
+
+
+        });
 
     });
 
@@ -433,6 +487,15 @@ describe('RouteManager', function () {
                 this.matchedRoute = this.routeManager.query('GeT', '/some.Route');
             });
 
+            it('Should look for the route in the cache', function () {
+
+                expect(this.mockCacheInstance.get.callCount).to.equal(1);
+                expect(this.mockCacheInstance.get.getCall(0).args).to.deep.equal([
+                    'get/some.Route'
+                ]);
+
+            });
+
             it('Should return the expected route', function () {
 
                 expect(this.matchedRoute.specification).to.equal('/some.Route');
@@ -441,11 +504,18 @@ describe('RouteManager', function () {
 
             });
 
-            it('Should cache the path route mapping', function () {
+            it('Should cache the matched route', function () {
 
-                var cachedRoute = this.routeManager._lookupCachedRouteForMethodAndPath('GET', '/some.Route');
-                expect(cachedRoute.method).to.equal('get');
-                expect(cachedRoute.specification).to.equal('/some.Route');
+                expect(this.mockCacheInstance.put.callCount).to.equal(1);
+                expect(this.mockCacheInstance.put.getCall(0).args).to.deep.equal([
+                    'get/some.Route',
+                    {
+                        specification: '/some.Route',
+                        method: 'get',
+                        path: '/some.Route',
+                        params: {}
+                    }
+                ]);
 
             });
 
@@ -459,6 +529,15 @@ describe('RouteManager', function () {
 
             });
 
+            it('Should look for the route in the cache', function () {
+
+                expect(this.mockCacheInstance.get.callCount).to.equal(1);
+                expect(this.mockCacheInstance.get.getCall(0).args).to.deep.equal([
+                    'get/some.Route/'
+                ]);
+
+            });
+
             it('Should return the expected route', function () {
 
                 expect(this.matchedRoute.specification).to.equal('/some.Route');
@@ -467,11 +546,18 @@ describe('RouteManager', function () {
 
             });
 
-            it('Should cache the path route mapping', function () {
+            it('Should cache the matched route', function () {
 
-                var cachedRoute = this.routeManager._lookupCachedRouteForMethodAndPath('get', '/some.Route/');
-                expect(cachedRoute.method).to.equal('get');
-                expect(cachedRoute.specification).to.equal('/some.Route');
+                expect(this.mockCacheInstance.put.callCount).to.equal(1);
+                expect(this.mockCacheInstance.put.getCall(0).args).to.deep.equal([
+                    'get/some.Route/',
+                    {
+                        specification: '/some.Route',
+                        method: 'get',
+                        path: '/some.Route/',
+                        params: {}
+                    }
+                ]);
 
             });
 
@@ -1334,108 +1420,93 @@ describe('RouteManager', function () {
     });
 
 
-    describe('When requesting multiple paths', function(){
+    describe('When requesting multiple paths', function () {
 
-        beforeEach(function(){
+        beforeEach(function () {
 
             this.routeManager.addRoute('GET', '/some.Route1');
             this.routeManager.addRoute('PUT', '/some.Route1');
             this.routeManager.addRoute('GET', '/some.Route2');
             this.routeManager.addRoute('GET', '/some.Route3');
 
-            this.routeManager.query('get', '/some.Route');
-            this.routeManager.query('get', '/some.Route');
-            this.routeManager.query('get', '/some.Route');
-            this.routeManager.query('get', '/some.Route1');
-            this.routeManager.query('get', '/some.Route1');
+            this.routeManager.query('get', '/some.Route-DoesNotExist1');
             this.routeManager.query('get', '/some.Route1');
             this.routeManager.query('put', '/some.Route1');
-            this.routeManager.query('put', '/some.Route1');
-            this.routeManager.query('put', '/some.Route1');
             this.routeManager.query('get', '/some.Route2');
-            this.routeManager.query('get', '/some.Route2');
-            this.routeManager.query('get', '/some.Route2');
-            this.routeManager.query('get', '/some.Route3');
-            this.routeManager.query('get', '/some.Route3');
             this.routeManager.query('get', '/some.Route3');
 
         });
 
-        it('Should cache the route mapping for requested routes that exist, but not for those that do not exist', function(){
+        it('Should cache path/routes that exist, but not those that don\'t', function () {
 
-            this.cachedRoutes = [];
-            for(var routeKey in this.routeManager._routeMapCache){
-                this.cachedRoutes.push(routeKey);
-            }
-
-            expect(this.cachedRoutes.length).to.equal(4);
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[0]].specification).to.equal('/some.Route1');
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[0]].method).to.equal('get');
-
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[1]].specification).to.equal('/some.Route1');
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[1]].method).to.equal('put');
-
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[2]].specification).to.equal('/some.Route2');
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[2]].method).to.equal('get');
-
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[3]].specification).to.equal('/some.Route3');
-            expect(this.routeManager._routeMapCache[this.cachedRoutes[3]].method).to.equal('get');
+            expect(this.mockCacheInstance.put.callCount).to.equal(4);
+            expect(this.mockCacheInstance.put.getCall(0).args[0]).to.deep.equal('get/some.Route1');
+            expect(this.mockCacheInstance.put.getCall(1).args[0]).to.deep.equal('put/some.Route1');
+            expect(this.mockCacheInstance.put.getCall(2).args[0]).to.deep.equal('get/some.Route2');
+            expect(this.mockCacheInstance.put.getCall(3).args[0]).to.deep.equal('get/some.Route3');
 
         });
 
-        it('Should return the correct routes when queried with valid paths (case sensitive) and valid methods (case insensitive)', function(){
+        it('Should return the correct routes when queried with valid paths (case sensitive) and valid methods (case insensitive)', function () {
 
-            expect(this.routeManager.query('get', '/some.Route')).to.equal(undefined);
+            expect(this.routeManager.query('get', '/some.Route-DoesNotExist1')).to.equal(undefined);
             expect(this.routeManager.query('get', '/soMe.Route1')).to.equal(undefined);
             expect(this.routeManager.query('get', '/soME.Route2')).to.equal(undefined);
 
-            expect(this.routeManager.query('get', '/some.Route1').specification).to.equal('/some.Route1');
-            expect(this.routeManager.query('gEt', '/some.Route1').specification).to.equal('/some.Route1');
-            expect(this.routeManager.query('geT', '/some.Route1').method).to.equal('get');
+            expect(this.routeManager.query('gEt', '/some.Route1')).to.deep.equal({ specification: '/some.Route1',
+                method: 'get',
+                path: '/some.Route1',
+                params: {}
+            });
 
-            expect(this.routeManager.query('put', '/some.Route1').specification).to.equal('/some.Route1');
-            expect(this.routeManager.query('puT', '/some.Route1').method).to.equal('put');
+            expect(this.routeManager.query('puT', '/some.Route1')).to.deep.equal({ specification: '/some.Route1',
+                method: 'put',
+                path: '/some.Route1',
+                params: {}
+            });
 
-            expect(this.routeManager.query('get', '/some.Route2').specification).to.equal('/some.Route2');
-            expect(this.routeManager.query('gEt', '/some.Route2').method).to.equal('get');
+            expect(this.routeManager.query('gEt', '/some.Route2')).to.deep.equal({ specification: '/some.Route2',
+                method: 'get',
+                path: '/some.Route2',
+                params: {}
+            });
 
-            expect(this.routeManager.query('GET', '/some.Route3').specification).to.equal('/some.Route3');
-            expect(this.routeManager.query('gET', '/some.Route3').method).to.equal('get');
+            expect(this.routeManager.query('gET', '/some.Route3')).to.deep.equal({ specification: '/some.Route3',
+                method: 'get',
+                path: '/some.Route3',
+                params: {}
+            });
 
         });
 
-        describe('Adding a new route after cached route mappings have been created', function(){
+        describe('Adding a new route', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
 
+                this.mockCacheInstance.reset.reset();
                 this.routeManager.addRoute('GET', '/some.Route5');
 
             });
 
-            it('Should reset the route mapping cache', function(){
+            it('Should reset the route cache', function () {
 
-                this.cachedRoutes = [];
-                for(var routeKey in this.routeManager._routeMapCache){
-                    this.cachedRoutes.push(routeKey);
-                }
-
-                expect(this.cachedRoutes.length).to.equal(0);
+                expect(this.mockCacheInstance.reset.callCount).to.equal(1);
 
             });
 
         });
 
-        describe('Case sensitivity', function(){
+        describe('Case sensitivity', function () {
 
-            beforeEach(function(){
+            beforeEach(function () {
 
                 this.routeManager.addRoute('GET', '/some.Route');
 
             });
 
-            describe('When querying a path using the correct method but different case that originally defined', function(){
+            describe('When querying a path using the correct method but different case that originally defined', function () {
 
-                it('Should return the route', function(){
+                it('Should return the route', function () {
 
                     expect(this.routeManager.query('gEt', '/some.Route').specification).to.equal('/some.Route');
                     expect(this.routeManager.query('gEt', '/some.Route').method).to.equal('get');
@@ -1444,9 +1515,9 @@ describe('RouteManager', function () {
 
             });
 
-            describe('When querying a path using the correct path but different casing than the specification', function(){
+            describe('When querying a path using the correct path but different casing than the specification', function () {
 
-                it('Should not return the route', function(){
+                it('Should not return the route', function () {
 
                     expect(this.routeManager.query('GET', '/soMe.Route')).to.equal(undefined);
 
@@ -1469,6 +1540,8 @@ describe('RouteManager', function () {
 
             expect(this.routeManager.routes.length).to.equal(3);
 
+            this.mockCacheInstance.reset.reset();
+
             this.routeManager.reset();
 
         });
@@ -1476,6 +1549,12 @@ describe('RouteManager', function () {
         it('Should remove all route definitions', function () {
 
             expect(this.routeManager.routes.length).to.equal(0);
+
+        });
+
+        it('Should reset the route cache', function () {
+
+            expect(this.mockCacheInstance.reset.callCount).to.equal(1);
 
         });
 
