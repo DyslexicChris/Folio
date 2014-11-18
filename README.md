@@ -1,5 +1,5 @@
-Folio
-==========
+folio.js
+=====
 
 [![Build Status](https://travis-ci.org/DyslexicChris/Folio.svg?branch=master)](https://travis-ci.org/DyslexicChris/Folio)
 [![Dependency Status](https://david-dm.org/DyslexicChris/Folio.svg)](https://david-dm.org/DyslexicChris/Folio)
@@ -9,7 +9,15 @@ Folio
 
 A fluent Node.js HTTP API framework inspired by express
 
-# Basic Example
+## Install
+
+The best way to add folio.js to your project is to use ```npm```. 
+
+```bash
+npm install folio.js --save
+```
+
+## Basic Example
 ```javascript
 // Require folio.js
 var Folio = require('folio.js');
