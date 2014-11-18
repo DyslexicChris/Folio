@@ -55,7 +55,7 @@ var exampleMiddleware = function(request, response, next) {
 
 	if(authorised(request)) {
 		// Continue with handling chain.
-		next():
+		next();
 	} else {
 		// Terminate response.
 		response.statusCode = 401;
