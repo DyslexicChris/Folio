@@ -29,11 +29,11 @@ describe('Folio', function () {
             this.object = 'requestHandler'
         };
 
-        this.ResponseDecorator = function () {
-            this.object = 'responseDecorator';
+        this.ObjectDecorator = function () {
+            this.object = 'objectDecorator';
         };
 
-        this.ResponseDecorator.prototype.addDecoration = function () {
+        this.ObjectDecorator.prototype.addDecoration = function () {
         };
 
         this.SendObjectDecoration = function () {
@@ -106,7 +106,7 @@ describe('Folio', function () {
         this.spies.httpServerStop = sinon.spy(this.HttpServer.prototype, 'stop');
         this.spies.processManagerClusterize = sinon.spy(this.ProcessManager.prototype, 'cluster');
         this.spies.jsonBodyParserFactoryNewMiddleware = sinon.spy(this.JSONBodyParserFactory.prototype, 'newMiddleware');
-        this.spies.responseDecoratorAddDecorator = sinon.spy(this.ResponseDecorator.prototype, 'addDecoration');
+        this.spies.objectDecoratorAddDecorator = sinon.spy(this.ObjectDecorator.prototype, 'addDecoration');
 
         mockery.deregisterAll();
 
@@ -127,7 +127,7 @@ describe('Folio', function () {
         mockery.registerMock('./RequestHandler', this.RequestHandler);
         mockery.registerMock('./ProcessManager', this.ProcessManager);
         mockery.registerMock('./middleware/JSONBodyParserFactory', this.JSONBodyParserFactory);
-        mockery.registerMock('./decorators/ResponseDecorator', this.ResponseDecorator);
+        mockery.registerMock('./decorators/ObjectDecorator', this.ObjectDecorator);
         mockery.registerMock('./decorators/response-decorations/SendObjectDecoration', this.SendObjectDecoration);
 
         this.Folio = require('../../lib/Folio');

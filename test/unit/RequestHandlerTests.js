@@ -61,6 +61,12 @@ describe('RequestHandler', function () {
                 }
             };
 
+            this.mockRequestDecorator = {
+                decorate: function () {
+
+                }
+            };
+
             this.middleware = {
             };
 
@@ -104,8 +110,9 @@ describe('RequestHandler', function () {
             this.spies.routeHandler = sinon.spy(this, 'routeHandler');
             this.spies.responseEnd = sinon.spy(this.mockResponse, 'end');
             this.spies.responseDecoratorDecorate = sinon.spy(this.mockResponseDecorator, 'decorate');
+            this.spies.requestDecoratorDecorate = sinon.spy(this.mockRequestDecorator, 'decorate');
 
-            this.requestHandler = new RequestHandler(this.mockRouteManager, this.mockRouteMiddlewareManager, this.mockRouteHandlerManager, this.mockResponseDecorator);
+            this.requestHandler = new RequestHandler(this.mockRouteManager, this.mockRouteMiddlewareManager, this.mockRouteHandlerManager, this.mockRequestDecorator, this.mockResponseDecorator);
 
         });
 
@@ -186,6 +193,12 @@ describe('RequestHandler', function () {
 
             });
 
+            it('Should decorate the request using the request decorator', function () {
+
+                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+
+            });
+
             it('Should decorate the response using the response decorator', function () {
 
                 expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
@@ -236,6 +249,12 @@ describe('RequestHandler', function () {
 
             });
 
+            it('Should decorate the request using the request decorator', function () {
+
+                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+
+            });
+
             it('Should decorate the response using the response decorator', function () {
 
                 expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
@@ -278,6 +297,12 @@ describe('RequestHandler', function () {
 
                 expect(this.middleware.routeMiddlewareA.callCount).to.equal(1);
                 expect(this.middleware.routeMiddlewareB.callCount).to.equal(1);
+
+            });
+
+            it('Should decorate the request using the request decorator', function () {
+
+                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
 
             });
 
@@ -326,6 +351,12 @@ describe('RequestHandler', function () {
 
             });
 
+            it('Should decorate the request using the request decorator', function () {
+
+                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+
+            });
+
             it('Should decorate the response using the response decorator', function () {
 
                 expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
@@ -368,6 +399,12 @@ describe('RequestHandler', function () {
 
                 expect(this.middleware.methodMiddlewareA.callCount).to.equal(1);
                 expect(this.middleware.methodMiddlewareB.callCount).to.equal(1);
+
+            });
+
+            it('Should decorate the request using the request decorator', function () {
+
+                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
 
             });
 
