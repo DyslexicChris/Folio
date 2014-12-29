@@ -767,7 +767,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)(?:\/)?$/.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-zA-Z0-9%\-_\.]+)(?:\/)?$/.toString());
 
         });
 
@@ -855,7 +855,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-zA-Z0-9%\-_\.]+)\/component\/([a-zA-Z0-9%\-_\.]+)(?:\/)?$/.toString());
 
         });
 
@@ -1014,7 +1014,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, with optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/component\/([a-z0-9%\-_\.]+)(?:\/)?$/.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-zA-Z0-9%\-_\.]+)\/component\/([a-zA-Z0-9%\-_\.]+)(?:\/)?$/.toString());
 
         });
 
@@ -1171,7 +1171,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, where the slash must be present before the wildcard (even if empty), but with an optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/[a-z0-9%\-_\.\/]*(?:\/)?$/.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/[a-zA-Z0-9%\-_\.\/]*(?:\/)?$/.toString());
 
         });
 
@@ -1280,7 +1280,7 @@ describe('RouteManager', function () {
 
         it('Should add a route with a regex created from the specification, where the slash must be present before the wildcard (even if empty), but with an optional trailing slash', function () {
 
-            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-z0-9%\-_\.]+)\/([a-z0-9%\-_\.]+)\/[a-z0-9%\-_\.\/]*(?:\/)?$/.toString());
+            expect(this.routeManager.routes[0].regex.toString()).to.equal(/^\/someRoute\/([a-zA-Z0-9%\-_\.]+)\/([a-zA-Z0-9%\-_\.]+)\/[a-zA-Z0-9%\-_\.\/]*(?:\/)?$/.toString());
 
         });
 

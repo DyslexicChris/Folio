@@ -47,7 +47,8 @@ describe('RequestHandler', function () {
 
             this.mockMathedRoute = {
                 method: 'test',
-                specification: 'matchSpecification'
+                specification: 'matchSpecification',
+                params: { varA: 'test' }
             };
 
             this.mockRouteManager.query = function (method, path) {
@@ -205,6 +206,11 @@ describe('RequestHandler', function () {
 
             });
 
+            it('Should attach the route parameters to the request object', function () {
+
+                expect(this.mockRequest.params).to.deep.equal({ varA: 'test' });
+            });
+
             it('Should send a 501 response', function () {
 
                 expect(this.mockResponse.statusCode).to.equal(501);
@@ -261,6 +267,11 @@ describe('RequestHandler', function () {
 
             });
 
+            it('Should attach the route parameters to the request object', function () {
+
+                expect(this.mockRequest.params).to.deep.equal({ varA: 'test' });
+            });
+
             it('Should execute the route handler', function () {
 
                 expect(this.routeHandler.callCount).to.equal(1);
@@ -310,6 +321,11 @@ describe('RequestHandler', function () {
 
                 expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
 
+            });
+
+            it('Should attach the route parameters to the request object', function () {
+
+                expect(this.mockRequest.params).to.deep.equal({ varA: 'test' });
             });
 
             it('Should execute the route handler', function () {
@@ -363,6 +379,11 @@ describe('RequestHandler', function () {
 
             });
 
+            it('Should attach the route parameters to the request object', function () {
+
+                expect(this.mockRequest.params).to.deep.equal({ varA: 'test' });
+            });
+
             it('Should execute the route handler', function () {
 
                 expect(this.routeHandler.callCount).to.equal(1);
@@ -412,6 +433,11 @@ describe('RequestHandler', function () {
 
                 expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
 
+            });
+
+            it('Should attach the route parameters to the request object', function () {
+
+                expect(this.mockRequest.params).to.deep.equal({ varA: 'test' });
             });
 
             it('Should execute the route handler', function () {

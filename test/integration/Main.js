@@ -13,14 +13,9 @@ beforeEach(function (done) {
 afterEach(function(done){
 
     try {
+        this.app.reset();
         this.app.stop(done);
     } catch (error){}
-
-});
-
-afterEach(function () {
-
-    this.app.reset();
 
 });
 
@@ -28,6 +23,7 @@ describe('The Folio Framework', function(){
 
     require('./BasicRouteDefinitionsAndHandlersTests.js');
     require('./BasicMiddlewareTests.js');
+    require('./VariableComponentsTests.js');
     require('./JSONBodyParserMiddlewareTests.js');
     require('./SendObjectDecorationTests.js');
 

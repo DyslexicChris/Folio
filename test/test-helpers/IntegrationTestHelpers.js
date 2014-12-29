@@ -9,9 +9,11 @@ module.exports = {
     requestPath: requestPath,
     assertStatusCode: assertStatusCode,
     assertResponseBody: assertResponseBody,
+    assertResponseBodyWithObject: assertResponseBodyWithObject,
     addTokenMiddlewareFactory: addTokenMiddlewareFactory,
     addTokenHandlerFactory: addTokenHandlerFactory,
     terminateWithStatusCode: terminateWithStatusCode,
+    echoParamsHanlder: echoParamsHanlder,
     noopMiddleware: noopMiddleware
 };
 
@@ -20,7 +22,7 @@ var testPort = 8050;
 /**
  * @param port
  */
-function setTestPort(port){
+function setTestPort(port) {
     'use strict';
 
     testPort = port;
@@ -29,7 +31,7 @@ function setTestPort(port){
 /**
  * @returns {number}
  */
-function getTestPort(){
+function getTestPort() {
     'use strict';
 
     return testPort;
@@ -82,21 +84,21 @@ function requestPath(method, path, body, suite, completion) {
         suite.response = response;
         suite.response.body = '';
 
-        response.on('data', function(chunk){
+        response.on('data', function (chunk) {
             suite.response.body = suite.response.body + chunk;
         });
 
-        response.on('end', function(){
+        response.on('end', function () {
             completion();
         });
 
-        response.on('error', function(error){
+        response.on('error', function (error) {
             console.log('Error receiving from test end-point', options, error);
         });
 
     });
 
-    if(body){
+    if (body) {
         request.write(body);
     }
 
@@ -121,11 +123,25 @@ function assertStatusCode(statusCode, suite) {
  * @param body {String} The expected response body
  * @param suite {Object} If called from a mocha test, suite should be 'this'
  */
-function assertResponseBody(body, suite){
+function assertResponseBody(body, suite) {
 
     expect(suite.response.body).to.equal(body);
 
 }
+
+/**
+ *
+ * Asserts a given response object for the previous response.
+ *
+ * @param object {Object} The expected response object
+ * @param suite {Object} If called from a mocha test, suite should be 'this'
+ */
+function assertResponseBodyWithObject(object, suite) {
+
+    expect(suite.response.body).to.equal(JSON.stringify(object));
+
+}
+
 
 /**
  * Returns a middleware that concatenates a given token to request.token
@@ -162,10 +178,30 @@ function addTokenHandlerFactory(token) {
  * @returns {Function} Middleware/Handler function
  */
 function terminateWithStatusCode(statusCode) {
-    return function(request, response) {
+    return function (request, response) {
         response.writeHead(statusCode);
         response.end();
     }
+}
+
+/**
+ * Returns a middleware/handler that terminates the request with an echo of the request parameters (variable components).
+ *
+ * @returns {Function} Middleware/Handler function
+ */
+function echoParamsHanlder() {
+    return function (request, response) {
+        var params = request.params;
+        var result = {
+            params: {}
+        };
+
+        for (var paramKey in params) {
+            result.params[paramKey] = params[paramKey];
+        }
+
+        response.send(result);
+    };
 }
 
 /**
@@ -175,6 +211,6 @@ function terminateWithStatusCode(statusCode) {
  * @param response
  * @param next {function}
  */
-function noopMiddleware(request, response, next){
+function noopMiddleware(request, response, next) {
     next && next();
 }
