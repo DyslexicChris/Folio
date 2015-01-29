@@ -1,9 +1,9 @@
 var expect = require('chai').expect;
 var sinon = require('sinon');
 var _ = require('underscore');
-var ResponseDecorator = require('../../../lib/decorators/ResponseDecorator.js');
+var ObjectDecorator = require('../../../lib/decorators/ObjectDecorator.js');
 
-describe('ResponseDecorator', function () {
+describe('ObjectDecorator', function () {
 
     beforeEach(function () {
 
@@ -22,13 +22,13 @@ describe('ResponseDecorator', function () {
 
         beforeEach(function () {
 
-            this.responseDecorator = new ResponseDecorator();
+            this.objectDecorator = new ObjectDecorator();
 
         });
 
         it('Should not be undefined', function () {
 
-            expect(this.responseDecorator).to.not.be.undefined;
+            expect(this.objectDecorator).to.not.be.undefined;
 
         });
 
@@ -52,23 +52,23 @@ describe('ResponseDecorator', function () {
                     }
                 };
 
-                this.responseDecorator.addDecoration(this.mockDecorationA, this.mockDecorationB);
+                this.objectDecorator.addDecoration(this.mockDecorationA, this.mockDecorationB);
 
             });
 
-            describe('Then when decorating a response', function(){
+            describe('Then when decorating an object', function(){
 
                 beforeEach(function(){
 
-                    this.mockResponse = {};
-                    this.responseDecorator.decorate(this.mockResponse);
+                    this.object = {};
+                    this.objectDecorator.decorate(this.object);
 
                 });
 
-                it('Should decorate the response with the decorations added previously', function(){
+                it('Should decorate the object with the decorations added previously', function(){
 
-                    expect(this.mockResponse.testA).to.equal(this.mockDecorationA.function);
-                    expect(this.mockResponse.testB).to.equal(this.mockDecorationB.function);
+                    expect(this.object.testA).to.equal(this.mockDecorationA.function);
+                    expect(this.object.testB).to.equal(this.mockDecorationB.function);
 
                 });
 
