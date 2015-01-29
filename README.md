@@ -82,9 +82,11 @@ var exampleHandler = function(request, response) {
 	var variableA = request.params['variableA'];
 	var variableB = request.params['variableB'];
 
-	var myObject = myDatabase.findMyObject(variableA, variableB);
+	myDatabase.findMyObject(variableA, variableB, function(result){
+	    response.send(result);
+	});
 
-	response.send(myObject);
+
 };
 ```
 
