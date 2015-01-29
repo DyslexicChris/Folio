@@ -85,8 +85,6 @@ var exampleHandler = function(request, response) {
 	myDatabase.findMyObject(variableA, variableB, function(result){
 	    response.send(result);
 	});
-
-
 };
 ```
 
