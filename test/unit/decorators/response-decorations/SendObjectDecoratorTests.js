@@ -1,22 +1,9 @@
 var expect = require('chai').expect;
-var sinon = require('sinon');
-var _ = require('underscore');
+var assert = require('chai').assert;
+var Stubs = require('../../Helpers/Stubs');
 var SendObjectDecoration = require('../../../../lib/decorators/response-decorations/SendObjectDecoration');
 
 describe('SendObjectDecoration', function () {
-
-    beforeEach(function () {
-
-        this.spies = {};
-
-    });
-
-    afterEach(function () {
-        _.each(this.spies, function (spy) {
-            spy.reset();
-            spy.restore();
-        });
-    });
 
     describe('On new', function () {
 
@@ -32,93 +19,61 @@ describe('SendObjectDecoration', function () {
 
         });
 
-        describe('name()', function () {
-
-            it('Should return \'send\'', function () {
-
-                expect(this.sendObjectDecoration.name());
-
-            })
-
-        });
-
-        describe('function(), when bound to a response', function () {
+        describe('when decorating a response', function () {
 
             beforeEach(function () {
 
-                this.response = {
-                    end: function () {
-                    },
-                    write: function () {
-                    },
-                    setHeader: function () {
-                    }
-                };
-
-                this.spies.responseSetHeader = sinon.spy(this.response, 'setHeader');
-                this.spies.responseWrite = sinon.spy(this.response, 'write');
-                this.spies.responseEnd = sinon.spy(this.response, 'end');
-
-                this.response.send = this.sendObjectDecoration.function;
-
+                this.response = Stubs.newResponse();
+                this.sendObjectDecoration.decorate(this.response);
 
             });
 
-            it('Should set a 200 status code if a status code is not already set', function () {
+            describe('and then using the decoration', function () {
 
-                this.response.send({
-                    myObject: 'myValue'
+                beforeEach(function () {
+
+                    this.sendObject = {
+                        myObject: 'myValue'
+                    };
+
+                    this.response.send(this.sendObject);
+
                 });
 
-                expect(this.response.statusCode).to.equal(200);
+                it('Should set a 200 status code if a status code is not already set', function () {
 
-            });
+                    expect(this.response.statusCode).to.equal(200);
 
-            it('Should not modify the status code if a status code is already set', function () {
-
-                this.response.statusCode = 300;
-                this.response.send({
-                    myObject: 'myValue'
                 });
 
-                expect(this.response.statusCode).to.equal(300);
+                it('Should not modify the status code if a status code is already set', function () {
 
-            });
+                    this.response.statusCode = 300;
+                    this.response.send(this.sendObject);
 
-            it('Should set the Content-Type header to "application/json"', function () {
+                    expect(this.response.statusCode).to.equal(300);
 
-                this.response.send({
-                    myObject: 'myValue'
                 });
 
-                expect(this.response.setHeader.callCount).to.equal(1);
-                expect(this.response.setHeader.getCall(0).args).to.deep.equal([
-                    'Content-Type',
-                    'application/json'
-                ]);
+                it('Should set the Content-Type header to "application/json"', function () {
 
-            });
+                    assert(this.response.setHeader.calledOnce);
+                    assert(this.response.setHeader.calledWithExactly('Content-Type', 'application/json'));
 
-            it('Should write the object to the response as JSON', function () {
-
-                this.response.send({
-                    myObject: 'myValue'
                 });
 
-                expect(this.response.write.callCount).to.equal(1);
-                expect(this.response.write.getCall(0).args).to.deep.equal([
-                    '{"myObject":"myValue"}',
-                ]);
+                it('Should write the object to the response as JSON', function () {
 
-            });
+                    assert(this.response.write.calledOnce);
+                    assert(this.response.write.calledWithExactly('{"myObject":"myValue"}'));
 
-            it('Should end the response', function () {
-
-                this.response.send({
-                    myObject: 'myValue'
                 });
 
-                expect(this.response.end.callCount).to.equal(1);
+                it('Should end the response', function () {
+
+                    assert(this.response.end.calledOnce);
+
+                });
 
             });
 

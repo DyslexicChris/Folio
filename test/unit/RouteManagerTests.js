@@ -1,36 +1,20 @@
 var expect = require('chai').expect;
+var assert = require('chai').assert;
 var mockery = require('mockery');
 var sinon = require('sinon');
 var _ = require('underscore');
+var Stubs = require('./Helpers/Stubs');
+var Assertions = require('./Helpers/Assertions');
 
 describe('RouteManager', function () {
 
     beforeEach(function () {
 
-        this.mockCacheInstance = {
-            get: function () {
-            },
-            put: function () {
-            },
-            reset: function () {
-            }
-        };
-
-        this.mockGuildCache = {
-            cacheWithSize: function () {
-                return this.mockCacheInstance;
-            }.bind(this)
-        };
-
-
-        this.spies = {};
-        this.spies.cacheGet = sinon.spy(this.mockCacheInstance, 'get');
-        this.spies.cachePut = sinon.spy(this.mockCacheInstance, 'put');
-        this.spies.cacheReset = sinon.spy(this.mockCacheInstance, 'reset');
-        this.spies.guildCacheCacheWithSize = sinon.spy(this.mockGuildCache, 'cacheWithSize');
+        this.mockCacheInstance = Stubs.newGuildCacheInstance();
+        this.mockGuildCache = Stubs.guildCacheModule();
+        this.mockGuildCache.cacheWithSize.returns(this.mockCacheInstance);
 
         mockery.deregisterAll();
-
         mockery.enable({
             warnOnReplace: false,
             useCleanCache: true
@@ -46,18 +30,17 @@ describe('RouteManager', function () {
     });
 
     afterEach(function () {
-        _.each(this.spies, function (spy) {
-            spy.restore();
-        })
+
+        mockery.disable();
+
     });
 
-    describe('On init', function(){
+    describe('On init', function () {
 
-        it('Should create a route cache of size 1000', function(){
+        it('Should create a route cache of size 1000', function () {
 
-            expect(this.mockGuildCache.cacheWithSize.callCount).to.equal(1);
-            expect(this.mockGuildCache.cacheWithSize.getCall(0).args).to.deep.equal([1000]);
-
+            assert(this.mockGuildCache.cacheWithSize.calledOnce);
+            assert(this.mockGuildCache.cacheWithSize.calledWithExactly(1000));
 
         });
 
@@ -69,123 +52,99 @@ describe('RouteManager', function () {
 
             it('Should not throw an exception for the route /test', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test');
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /test_case/', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test_case/')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test_case/')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /test-case/:var', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test-case/:var')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test-case/:var')
+                }, this);
 
             });
 
 
             it('Should not throw an exception for the route /test/:var/example', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/example')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/example')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /test/:var/:varB/example', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/:varB/example')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/:varB/example')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /test/:var/:varB/example.test', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/:varB/example.test')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/:varB/example.test')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /test.case/:var/:varB/example', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test.case/:var/:varB/example')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test.case/:var/:varB/example')
+                }, this);
 
             });
 
 
             it('Should not throw an exception for the route /test/:var/static/:varB/_example', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/static/:varB/_example')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/static/:varB/_example')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /test/:var/example/*', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/example/*')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/example/*')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /test/:var/*', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/*')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/*')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /*', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/*')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/*')
+                }, this);
 
             });
 
             it('Should not throw an exception for the route /', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/')
-                }).to.not.throw('Invalid route specification');
+                Assertions.assertNoThrow(function () {
+                    this.routeManager.addRoute('GET', '/')
+                }, this);
 
             });
 
@@ -196,153 +155,123 @@ describe('RouteManager', function () {
 
             it('Should throw an exception for the route /test?', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test?')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test?')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /*/test/', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/*/test/:')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/*/test/:')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route //test/', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '//test/')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '//test/')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /test//', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test//')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test//')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route test/', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', 'test/')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', 'test/')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route test', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', 'test')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', 'test')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /test/:var:', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var:')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/:var:')
+                }, 'Invalid route specification', this);
 
             });
 
 
             it('Should throw an exception for the route /test/*/example', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/*/example')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/*/example')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /test/:var/example/*/route', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/example/*/route')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/example/*/route')
+                }, 'Invalid route specification', this);
 
             });
 
 
             it('Should throw an exception for the route /test/:var/example*', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/example*')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/example*')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /test/:var/:example*', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/:example*')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/:example*')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /test/:var/example*/', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/example*/')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/example*/')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /test/:var/example*/*', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/example*/*')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/example*/*')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route /test/:var/example/**', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '/test/:var/example/**')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '/test/:var/example/**')
+                }, 'Invalid route specification', this);
 
             });
 
             it('Should throw an exception for the route *', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeManager.addRoute('GET', '*')
-                }).to.throw('Invalid route specification');
+                Assertions.assertThrows(function () {
+                    this.routeManager.addRoute('GET', '*')
+                }, 'Invalid route specification', this);
 
             });
 
@@ -489,10 +418,8 @@ describe('RouteManager', function () {
 
             it('Should look for the route in the cache', function () {
 
-                expect(this.mockCacheInstance.get.callCount).to.equal(1);
-                expect(this.mockCacheInstance.get.getCall(0).args).to.deep.equal([
-                    'get/some.Route'
-                ]);
+                assert(this.mockCacheInstance.get.calledOnce);
+                expect(this.mockCacheInstance.get.calledWithExactly('get/some.Route'));
 
             });
 
@@ -506,16 +433,15 @@ describe('RouteManager', function () {
 
             it('Should cache the matched route', function () {
 
-                expect(this.mockCacheInstance.put.callCount).to.equal(1);
-                expect(this.mockCacheInstance.put.getCall(0).args).to.deep.equal([
-                    'get/some.Route',
+                assert(this.mockCacheInstance.put.calledOnce);
+                assert(this.mockCacheInstance.put.calledWithExactly('get/some.Route',
                     {
                         specification: '/some.Route',
                         method: 'get',
                         path: '/some.Route',
                         params: {}
-                    }
-                ]);
+                    })
+                );
 
             });
 
@@ -531,10 +457,8 @@ describe('RouteManager', function () {
 
             it('Should look for the route in the cache', function () {
 
-                expect(this.mockCacheInstance.get.callCount).to.equal(1);
-                expect(this.mockCacheInstance.get.getCall(0).args).to.deep.equal([
-                    'get/some.Route/'
-                ]);
+                assert(this.mockCacheInstance.get.calledOnce);
+                assert(this.mockCacheInstance.get.calledWithExactly('get/some.Route/'));
 
             });
 
@@ -548,16 +472,15 @@ describe('RouteManager', function () {
 
             it('Should cache the matched route', function () {
 
-                expect(this.mockCacheInstance.put.callCount).to.equal(1);
-                expect(this.mockCacheInstance.put.getCall(0).args).to.deep.equal([
-                    'get/some.Route/',
+                assert(this.mockCacheInstance.put.calledOnce);
+                assert(this.mockCacheInstance.put.calledWithExactly('get/some.Route/',
                     {
                         specification: '/some.Route',
                         method: 'get',
                         path: '/some.Route/',
                         params: {}
-                    }
-                ]);
+                    })
+                );
 
             });
 
@@ -573,7 +496,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -590,7 +513,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -606,7 +529,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -698,7 +621,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -714,7 +637,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -730,7 +653,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -819,7 +742,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -913,7 +836,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -929,7 +852,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -945,7 +868,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -961,7 +884,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -977,7 +900,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1072,7 +995,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1088,7 +1011,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1104,7 +1027,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1120,7 +1043,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1136,7 +1059,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1228,7 +1151,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1244,7 +1167,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1363,7 +1286,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1379,7 +1302,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1395,7 +1318,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1411,7 +1334,7 @@ describe('RouteManager', function () {
 
             it('Should return an undefined route', function () {
 
-                expect(this.matchedRoute).to.equal(undefined);
+                expect(this.matchedRoute).to.be.undefined;
 
             });
 
@@ -1449,9 +1372,9 @@ describe('RouteManager', function () {
 
         it('Should return the correct routes when queried with valid paths (case sensitive) and valid methods (case insensitive)', function () {
 
-            expect(this.routeManager.query('get', '/some.Route-DoesNotExist1')).to.equal(undefined);
-            expect(this.routeManager.query('get', '/soMe.Route1')).to.equal(undefined);
-            expect(this.routeManager.query('get', '/soME.Route2')).to.equal(undefined);
+            expect(this.routeManager.query('get', '/some.Route-DoesNotExist1')).to.be.undefined;
+            expect(this.routeManager.query('get', '/soMe.Route1')).to.be.undefined;
+            expect(this.routeManager.query('get', '/soME.Route2')).to.be.undefined;
 
             expect(this.routeManager.query('gEt', '/some.Route1')).to.deep.equal({ specification: '/some.Route1',
                 method: 'get',
@@ -1519,7 +1442,7 @@ describe('RouteManager', function () {
 
                 it('Should not return the route', function () {
 
-                    expect(this.routeManager.query('GET', '/soMe.Route')).to.equal(undefined);
+                    expect(this.routeManager.query('GET', '/soMe.Route')).to.be.undefined;
 
                 });
 

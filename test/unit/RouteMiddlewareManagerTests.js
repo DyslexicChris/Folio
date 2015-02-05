@@ -1,4 +1,7 @@
 var expect = require('chai').expect;
+var assert = require('chai').assert;
+var Stubs = require('./Helpers/Stubs');
+var Assertions = require('./Helpers/Assertions');
 var RouteMiddlewareManager = require('../../lib/RouteMiddlewareManager');
 
 describe('RouteMiddlewareManager', function () {
@@ -17,17 +20,10 @@ describe('RouteMiddlewareManager', function () {
             specification: '/testB'
         };
 
-        this.validMiddlewareA = function () {
-        };
-
-        this.validMiddlewareB = function () {
-        };
-
-        this.validMiddlewareC = function () {
-        };
-
-        this.validMiddlewareD = function () {
-        };
+        this.validMiddlewareA = Stubs.newFunction();
+        this.validMiddlewareB = Stubs.newFunction();
+        this.validMiddlewareC = Stubs.newFunction();
+        this.validMiddlewareD = Stubs.newFunction();
 
         this.invalidMiddleware = {};
 
@@ -39,11 +35,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForRoute(thisTest.mockRouteA.method, thisTest.mockRouteA.specification, thisTest.validMiddlewareA)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeMiddlewareManager.addMiddlewareForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validMiddlewareA);
+                }, this);
 
             });
 
@@ -112,11 +106,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForRoute(thisTest.mockRouteA.method, thisTest.mockRouteA.specification, thisTest.invalidMiddleware)
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeMiddlewareManager.addMiddlewareForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.invalidMiddleware)
+                }, 'Middleware is not a function', this);
 
             });
 
@@ -130,11 +122,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addGlobalMiddleware(thisTest.validMiddlewareA)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeMiddlewareManager.addGlobalMiddleware(this.validMiddlewareA)
+                }, this);
 
             });
 
@@ -151,11 +141,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('get', thisTest.validMiddlewareA)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('get', this.validMiddlewareA)
+                }, this);
 
             });
 
@@ -172,11 +160,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('post', thisTest.validMiddlewareB)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('post', this.validMiddlewareB);
+                }, this);
 
             });
 
@@ -193,11 +179,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('put', thisTest.validMiddlewareA)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('put', this.validMiddlewareA)
+                }, this);
 
             });
 
@@ -214,11 +198,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('delete', thisTest.validMiddlewareA)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('delete', this.validMiddlewareA)
+                }, this);
 
             });
 
@@ -235,11 +217,9 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('other', thisTest.validMiddlewareB)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('other', this.validMiddlewareB)
+                }, this);
 
             });
 
@@ -275,61 +255,49 @@ describe('RouteMiddlewareManager', function () {
 
             it('Should throw an exception for "all"', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addGlobalMiddleware(thisTest.invalidMiddleware)
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeMiddlewareManager.addGlobalMiddleware(this.invalidMiddleware)
+                }, 'Middleware is not a function', this);
 
             });
 
             it('Should throw an exception for "get"', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('get', thisTest.invalidMiddleware)
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('get', this.invalidMiddleware)
+                }, 'Middleware is not a function', this);
 
             });
 
             it('Should throw an exception for "post"', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('post', thisTest.invalidMiddleware)
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('post', this.invalidMiddleware)
+                }, 'Middleware is not a function', this);
 
             });
 
             it('Should throw an exception for "put"', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('put', thisTest.invalidMiddleware)
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('put', this.invalidMiddleware)
+                }, 'Middleware is not a function', this);
 
             });
 
             it('Should throw an exception for "delete"', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('delete', thisTest.invalidMiddleware)
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('delete', this.invalidMiddleware)
+                }, 'Middleware is not a function', this);
 
             });
 
             it('Should throw an exception for "other"', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeMiddlewareManager.addMiddlewareForMethod('other', thisTest.invalidMiddleware)
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeMiddlewareManager.addMiddlewareForMethod('other', this.invalidMiddleware)
+                }, 'Middleware is not a function', this);
 
             });
 
@@ -337,9 +305,9 @@ describe('RouteMiddlewareManager', function () {
 
     });
 
-    describe('On reset()', function(){
+    describe('On reset()', function () {
 
-        beforeEach(function(){
+        beforeEach(function () {
 
             this.routeMiddlewareManager.addMiddlewareForMethod('GET', this.validMiddlewareA);
             this.routeMiddlewareManager.addMiddlewareForRoute('POST', '/test-specification', this.validMiddlewareB);
@@ -351,7 +319,7 @@ describe('RouteMiddlewareManager', function () {
 
         });
 
-        it('Should remove all middleware', function(){
+        it('Should remove all middleware', function () {
 
             expect(this.routeMiddlewareManager.getMiddlewareForMethod('GET')).to.deep.equal([]);
             expect(this.routeMiddlewareManager.getMiddlewareForRoute('POST', '/test-specification')).to.deep.equal([]);
