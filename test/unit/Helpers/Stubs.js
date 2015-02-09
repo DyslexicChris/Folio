@@ -9,7 +9,19 @@ module.exports = {
     newDecoration: newDecoration,
     newFunction: newFunction,
     newGuildCacheInstance: newGuildCacheInstance,
-    guildCacheModule: guildCacheModule
+    guildCacheModule: guildCacheModule,
+    newRouteManager: newRouteManager,
+    newRouteMiddlewareManager: newRouteMiddlewareManager,
+    newRouteHandlerManager: newRouteHandlerManager,
+    newMiddlewareCaninster: newMiddlewareCaninster,
+    newDomain: newDomain,
+    newHTTPServer: newHTTPServer,
+    HTTPModule: HTTPModule,
+    LoggerModule: LoggerModule,
+    newLogger: newLogger,
+    newRequestHandler: newRequestHandler,
+    newCluster: newCluster,
+    newOS: newOS
 };
 
 /**
@@ -50,6 +62,7 @@ function newResponse() {
     return {
         end: sinon.stub(),
         write: sinon.stub(),
+        writeHead: sinon.stub(),
         setHeader: sinon.stub(),
         getHeader: sinon.stub()
     };
@@ -113,5 +126,177 @@ function guildCacheModule() {
 
     return {
         cacheWithSize: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{addRoute: *}}
+ */
+function newRouteManager() {
+    'use strict';
+
+    return {
+        addRoute: sinon.stub(),
+        reset: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{addMiddlewareForRoute: *}}
+ */
+function newRouteMiddlewareManager() {
+    'use strict';
+
+    return  {
+        getGlobalMiddleware: sinon.stub(),
+        addGlobalMiddleware: sinon.stub(),
+        getMiddlewareForMethod: sinon.stub(),
+        addMiddlewareForMethod: sinon.stub(),
+        getMiddlewareForRoute: sinon.stub(),
+        addMiddlewareForRoute: sinon.stub(),
+        reset: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{addHandlerForRoute: *}}
+ */
+function newRouteHandlerManager() {
+    'use strict';
+
+    return {
+        getHandlerForRoute: sinon.stub(),
+        addHandlerForRoute: sinon.stub(),
+        reset: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{addMiddleware: *}}
+ */
+function newMiddlewareCaninster() {
+    'use strict';
+
+    return {
+        addMiddleware: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{create: *, on: *, add: *, run: *}}
+ */
+function newDomain() {
+    'use strict';
+
+    var domain = {
+        create: sinon.stub(),
+        on: sinon.stub(),
+        add: sinon.stub(),
+        run: sinon.stub()
+    };
+
+    domain.create.returns(domain);
+    domain.run.callsArg(0);
+
+    return domain;
+}
+
+/**
+ *
+ * @returns {{listen: *, close: *}}
+ */
+function newHTTPServer() {
+    'use strict';
+
+    return {
+        listen: sinon.stub(),
+        close: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{createServer: *, close: *}}
+ */
+function HTTPModule() {
+    'use strict';
+
+    return {
+        createServer: sinon.stub(),
+        close: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{getLogger: *}}
+ */
+function LoggerModule() {
+    'use strict';
+
+    var logger = newLogger();
+
+    var loggerModule = {
+        getLogger: sinon.stub()
+    };
+
+    loggerModule.getLogger.returns(logger);
+
+    return loggerModule;
+}
+
+/**
+ *
+ * @returns {{log: *, error: *, warn: *}}
+ */
+function newLogger() {
+    'use strict';
+
+    return {
+        log: sinon.stub(),
+        error: sinon.stub(),
+        warn: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{handle: *}}
+ */
+function newRequestHandler() {
+    'use strict';
+
+    return {
+        handle: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{fork: *, on: *}}
+ */
+function newCluster() {
+    'use strict';
+
+    return {
+        fork: sinon.stub(),
+        on: sinon.stub()
+    };
+}
+
+/**
+ *
+ * @returns {{cpus: *}}
+ */
+function newOS() {
+    'use strict';
+
+    return {
+        cpus: sinon.stub()
     };
 }

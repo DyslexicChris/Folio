@@ -1,4 +1,5 @@
 var expect = require('chai').expect;
+var assert = require('chai').assert;
 var Stubs = require('../Helpers/Stubs');
 var ObjectDecorator = require('../../../lib/decorators/ObjectDecorator.js');
 
@@ -44,8 +45,8 @@ describe('ObjectDecorator', function () {
 
                 it('Should have each decoration decorate the given object', function () {
 
-                    expect(this.mockDecorationA.decorate.calledWithExactly(this.object)).to.be.true;
-                    expect(this.mockDecorationB.decorate.calledWithExactly(this.object)).to.be.true;
+                    assert(this.mockDecorationA.decorate.calledWithExactly(this.object));
+                    assert(this.mockDecorationB.decorate.calledWithExactly(this.object));
 
                 });
 

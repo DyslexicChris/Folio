@@ -1,4 +1,7 @@
 var expect = require('chai').expect;
+var assert = require('chai').assert;
+var Stubs = require('./Helpers/Stubs');
+var Assertions = require('./Helpers/Assertions');
 var RouteHandlerManager = require('../../lib/RouteHandlerManager');
 
 describe('RouteHandlerManager', function () {
@@ -22,12 +25,8 @@ describe('RouteHandlerManager', function () {
             specification: '/testC'
         };
 
-        this.validHandlerA = function () {
-        };
-
-        this.validHandlerB = function () {
-        };
-
+        this.validHandlerA = Stubs.newFunction();
+        this.validHandlerB = Stubs.newFunction();
         this.invalidHandler = {};
 
     });
@@ -38,11 +37,9 @@ describe('RouteHandlerManager', function () {
 
             it('Should not throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeHandlerManager.addHandlerForRoute(thisTest.mockRouteA.method, thisTest.mockRouteA.specification, thisTest.validHandlerA)
-                }).to.not.throw();
+                Assertions.assertNoThrow(function () {
+                    this.routeHandlerManager.addHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validHandlerA);
+                }, this);
 
             });
 
@@ -63,7 +60,7 @@ describe('RouteHandlerManager', function () {
             it('Should not return a handler if the path casing does not match the specification\'s', function () {
 
                 this.routeHandlerManager.addHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.validHandlerA);
-                expect(this.routeHandlerManager.getHandlerForRoute('get', '/testa')).to.equal(undefined);
+                expect(this.routeHandlerManager.getHandlerForRoute('get', '/testa')).to.be.undefined;
 
             });
 
@@ -91,11 +88,9 @@ describe('RouteHandlerManager', function () {
 
             it('Should throw an exception', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.routeHandlerManager.addHandlerForRoute(thisTest.mockRouteA.method, thisTest.mockRouteA.specification, thisTest.invalidHandler)
-                }).to.throw('Handler is not a function');
+                Assertions.assertThrows(function () {
+                    this.routeHandlerManager.addHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification, this.invalidHandler)
+                }, 'Handler is not a function', this);
 
             });
 
@@ -113,7 +108,7 @@ describe('RouteHandlerManager', function () {
 
     });
 
-    describe('On reset()', function(){
+    describe('On reset()', function () {
 
         beforeEach(function () {
 
@@ -127,10 +122,10 @@ describe('RouteHandlerManager', function () {
 
         });
 
-        it('Should remove all route handlers', function(){
+        it('Should remove all route handlers', function () {
 
-            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification)).to.equal(undefined);
-            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteB.method, this.mockRouteB.specification)).to.equal(undefined);
+            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteA.method, this.mockRouteA.specification)).to.be.undefined;
+            expect(this.routeHandlerManager.getHandlerForRoute(this.mockRouteB.method, this.mockRouteB.specification)).to.be.undefined;
 
         });
 

@@ -1,8 +1,6 @@
 var expect = require('chai').expect;
 var assert = require('chai').assert;
 var mockery = require('mockery');
-var sinon = require('sinon');
-var _ = require('underscore');
 var Stubs = require('./Helpers/Stubs');
 var Assertions = require('./Helpers/Assertions');
 
@@ -1413,7 +1411,7 @@ describe('RouteManager', function () {
 
             it('Should reset the route cache', function () {
 
-                expect(this.mockCacheInstance.reset.callCount).to.equal(1);
+                assert(this.mockCacheInstance.reset.calledOnce);
 
             });
 
@@ -1477,7 +1475,7 @@ describe('RouteManager', function () {
 
         it('Should reset the route cache', function () {
 
-            expect(this.mockCacheInstance.reset.callCount).to.equal(1);
+            assert(this.mockCacheInstance.reset.calledOnce);
 
         });
 

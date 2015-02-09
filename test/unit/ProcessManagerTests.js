@@ -1,6 +1,7 @@
-var _ = require('underscore');
 var expect = require('chai').expect;
-var sinon = require('sinon');
+var assert = require('chai').assert;
+var Stubs = require('./Helpers/Stubs');
+var Assertions = require('./Helpers/Assertions');
 var mockery = require('mockery');
 
 
@@ -8,30 +9,13 @@ describe('ProcessManager', function () {
 
     beforeEach(function () {
 
-        this.mockCluster = {
-            isMaster: true,
-            fork: function(){},
-            on: function(){}
-        };
+        this.mockCluster = Stubs.newCluster();
+        this.mockCluster.isMaster = true;
 
-        this.mockOS = {
-            cpus: function(){
-                return [1,2];
-            }
-        };
+        this.mockOS = Stubs.newOS();
+        this.mockOS.cpus.returns([1, 2]);
 
-        this.mockLogger = {
-            log: function(){
-            },
-            getLogger: function () {
-                return this;
-            }
-        };
-
-        this.spies = {};
-        this.spies.clusterFork = sinon.spy(this.mockCluster, 'fork');
-        this.spies.clusterOn = sinon.spy(this.mockCluster, 'on');
-
+        this.mockLoggerModule = Stubs.LoggerModule();
 
         mockery.deregisterAll();
 
@@ -40,24 +24,16 @@ describe('ProcessManager', function () {
             useCleanCache: true
         });
 
-
         mockery.registerAllowable('../../lib/ProcessManager', true);
         mockery.registerAllowable('underscore');
         mockery.registerMock('cluster', this.mockCluster);
         mockery.registerMock('os', this.mockOS);
-        mockery.registerMock('./Logger', this.mockLogger);
-
+        mockery.registerMock('./Logger', this.mockLoggerModule);
 
         this.ProcessManager = require('../../lib/ProcessManager');
 
-
     });
 
-    afterEach(function () {
-        _.each(this.spies, function (spy) {
-            spy.restore();
-        })
-    });
 
     describe('On new', function () {
 
@@ -67,62 +43,57 @@ describe('ProcessManager', function () {
 
         });
 
-        it('Should not be null', function(){
+        it('Should not be null', function () {
 
             expect(this.processManager).to.not.be.null;
 
         });
 
-        describe('On cluster(clusterizedFunction) (with a CPU count of 2)', function(){
+        describe('On cluster(clusterizedFunction) (with a CPU count of 2)', function () {
 
-            describe('When process is master', function(){
+            describe('When process is master', function () {
 
 
-                beforeEach(function(){
+                beforeEach(function () {
 
                     this.mockCluster.isMaster = true;
-
-                    this.clusterizedFunction = function(){
-                    };
-
-                    this.spies.clusterizedFunction = sinon.spy(this, 'clusterizedFunction');
+                    this.clusterizedFunction = Stubs.newFunction();
 
                     this.processManager.cluster(this.clusterizedFunction);
 
                 });
 
-                it('Should fork 2 workers', function(){
+                it('Should fork 2 workers', function () {
 
-                    expect(this.mockCluster.fork.callCount).to.equal(2);
-
-                });
-
-                it('Should not call the given clusterized function', function(){
-
-                    expect(this.clusterizedFunction.callCount).to.equal(0);
+                    assert(this.mockCluster.fork.calledTwice);
 
                 });
 
-                it('Should set the exit callback on the cluster', function(){
+                it('Should not call the given clusterized function', function () {
 
-                    expect(this.mockCluster.on.callCount).to.equal(1);
-                    expect(this.mockCluster.on.getCall(0).args[0]).to.equal('exit');
+                    assert(this.clusterizedFunction.notCalled);
 
                 });
 
-                describe('When the exit callback is called', function(){
+                it('Should set the exit callback on the cluster', function () {
 
-                    beforeEach(function(){
+                    assert(this.mockCluster.on.calledOnce);
+                    assert(this.mockCluster.on.calledWith('exit'));
+
+                });
+
+                describe('When the exit callback is called', function () {
+
+                    beforeEach(function () {
 
                         this.mockCluster.fork.reset();
-                        var callback = this.mockCluster.on.getCall(0).args[1];
-                        callback();
+                        this.mockCluster.on.callArg(1);
 
                     });
 
-                    it('Should fork another worker', function(){
+                    it('Should fork another worker', function () {
 
-                        expect(this.mockCluster.fork.callCount).to.equal(1);
+                        assert(this.mockCluster.fork.calledOnce);
 
                     });
 
@@ -130,32 +101,27 @@ describe('ProcessManager', function () {
 
             });
 
+            describe('When process is worker', function () {
 
-            describe('When process is worker', function(){
 
-
-                beforeEach(function(){
+                beforeEach(function () {
 
                     this.mockCluster.isMaster = false;
-
-                    this.clusterizedFunction = function(){
-                    };
-
-                    this.spies.clusterizedFunction = sinon.spy(this, 'clusterizedFunction');
+                    this.clusterizedFunction = Stubs.newFunction();
 
                     this.processManager.cluster(this.clusterizedFunction);
 
                 });
 
-                it('Should not fork any workers', function(){
+                it('Should not fork any workers', function () {
 
-                    expect(this.mockCluster.fork.callCount).to.equal(0);
+                    assert(this.mockCluster.fork.notCalled);
 
                 });
 
-                it('Should immediately call the given clusterized function', function(){
+                it('Should immediately call the given clusterized function', function () {
 
-                    expect(this.clusterizedFunction.callCount).to.equal(1);
+                    assert(this.clusterizedFunction.calledOnce);
 
                 });
 

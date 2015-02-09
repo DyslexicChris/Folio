@@ -1,6 +1,7 @@
-var _ = require('underscore');
 var expect = require('chai').expect;
-var sinon = require('sinon');
+var assert = require('chai').assert;
+var Stubs = require('./Helpers/Stubs');
+var Assertions = require('./Helpers/Assertions');
 var MiddlewareCanister = require('../../lib/MiddlewareCanister');
 
 describe('MiddlewareCanister', function () {
@@ -10,35 +11,12 @@ describe('MiddlewareCanister', function () {
         this.mockMethod = 'put';
         this.mockSpecification = '/test/specification';
 
-        this.mockRouteMiddlewareManager = {
-            addMiddlewareForRoute: function () {
-            },
-            addGlobalMiddleware: function () {
-            },
-            addMiddlewareForMethod: function () {
-            }
-        };
+        this.mockRouteMiddlewareManager = Stubs.newRouteMiddlewareManager();
 
-        this.mockMiddlewareA = function () {
-        };
+        this.mockMiddlewareA = Stubs.newFunction();
+        this.mockMiddlewareB = Stubs.newFunction();
+        this.mockMiddlewareC = Stubs.newFunction();
 
-        this.mockMiddlewareB = function () {
-        };
-
-        this.mockMiddlewareC = function () {
-        };
-
-        this.spies = {};
-        this.spies.routeMiddlewareManagerAddMiddlewareForRoute = sinon.spy(this.mockRouteMiddlewareManager, 'addMiddlewareForRoute');
-        this.spies.routeMiddlewareManagerAddGlobalMiddleware = sinon.spy(this.mockRouteMiddlewareManager, 'addGlobalMiddleware');
-        this.spies.routeMiddlewareManagerAddMiddlewareForMethod = sinon.spy(this.mockRouteMiddlewareManager, 'addMiddlewareForMethod');
-
-    });
-
-    afterEach(function () {
-        _.each(this.spies, function (spy) {
-            spy.restore();
-        })
     });
 
     describe('On new', function () {
@@ -52,12 +30,6 @@ describe('MiddlewareCanister', function () {
         it('Should have an empty array of middleware', function () {
 
             expect(this.middlewareCanister.middleware()).to.deep.equal([]);
-
-        });
-
-        it('Should have its route middleware manager set', function () {
-
-            expect(this.middlewareCanister._routeMiddlewareManager).to.deep.equal(this.mockRouteMiddlewareManager);
 
         });
 
@@ -109,6 +81,7 @@ describe('MiddlewareCanister', function () {
             it('Should throw an error - "Middleware is null"', function () {
 
                 expect(this.middlewareCanister.addMiddleware).to.throw('Middleware is null');
+
             });
 
         });
@@ -117,10 +90,9 @@ describe('MiddlewareCanister', function () {
 
             it('Should throw an error - "Middleware is not a function"', function () {
 
-                var thisTest = this;
-                expect(function () {
-                    thisTest.middlewareCanister.addMiddleware({hi: "there"});
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.middlewareCanister.addMiddleware({hi: "there"});
+                }, 'Middleware is not a function', this);
 
             });
 
@@ -130,10 +102,10 @@ describe('MiddlewareCanister', function () {
 
             it('Should throw an error "Middleware is null"', function () {
 
-                var thisTest = this;
-                expect(function () {
-                    thisTest.middlewareCanister.addMiddleware(thisTest.mockMiddlewareA, null, thisTest.mockMiddlewareB);
-                }).to.throw('Middleware is null');
+                Assertions.assertThrows(function () {
+                    this.middlewareCanister.addMiddleware(this.mockMiddlewareA, null, this.mockMiddlewareB);
+                }, 'Middleware is null', this);
+
             });
 
         });
@@ -142,10 +114,9 @@ describe('MiddlewareCanister', function () {
 
             it('Should throw an error - "Middleware is not a function"', function () {
 
-                var thisTest = this;
-                expect(function () {
-                    thisTest.middlewareCanister.addMiddleware(thisTest.mockMiddlewareA, {hi: "there"}, thisTest.mockMiddlewareB);
-                }).to.throw('Middleware is not a function');
+                Assertions.assertThrows(function () {
+                    this.middlewareCanister.addMiddleware(this.mockMiddlewareA, {hi: "there"}, this.mockMiddlewareB);
+                }, 'Middleware is not a function', this);
 
             });
 
@@ -165,7 +136,7 @@ describe('MiddlewareCanister', function () {
 
             it('Should add each middleware in the canister to the route middleware manager based on the given method and specification', function () {
 
-                expect(this.mockRouteMiddlewareManager.addMiddlewareForRoute.callCount).to.equal(2);
+                assert(this.mockRouteMiddlewareManager.addMiddlewareForRoute.calledTwice);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForRoute.getCall(0).args).to.deep.equal(['get', '/test/route', this.mockMiddlewareA]);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForRoute.getCall(1).args).to.deep.equal(['get', '/test/route', this.mockMiddlewareB]);
 
@@ -184,7 +155,7 @@ describe('MiddlewareCanister', function () {
 
             it('Should add each middleware in the canister to the route middleware manager as global middleware', function () {
 
-                expect(this.mockRouteMiddlewareManager.addGlobalMiddleware.callCount).to.equal(2);
+                assert(this.mockRouteMiddlewareManager.addGlobalMiddleware.calledTwice);
                 expect(this.mockRouteMiddlewareManager.addGlobalMiddleware.getCall(0).args).to.deep.equal([this.mockMiddlewareA]);
                 expect(this.mockRouteMiddlewareManager.addGlobalMiddleware.getCall(1).args).to.deep.equal([this.mockMiddlewareB]);
 
@@ -203,7 +174,7 @@ describe('MiddlewareCanister', function () {
 
             it('Should add each middleware in the canister to the route middleware manager as global middleware for all GETs', function () {
 
-                expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.callCount).to.equal(2);
+                assert(this.mockRouteMiddlewareManager.addMiddlewareForMethod.calledTwice);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(0).args).to.deep.equal(['GET', this.mockMiddlewareA]);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(1).args).to.deep.equal(['GET', this.mockMiddlewareB]);
 
@@ -222,7 +193,7 @@ describe('MiddlewareCanister', function () {
 
             it('Should add each middleware in the canister to the route middleware manager as global middleware for all POSTs', function () {
 
-                expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.callCount).to.equal(2);
+                assert(this.mockRouteMiddlewareManager.addMiddlewareForMethod.calledTwice);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(0).args).to.deep.equal(['POST', this.mockMiddlewareA]);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(1).args).to.deep.equal(['POST', this.mockMiddlewareB]);
 
@@ -241,7 +212,7 @@ describe('MiddlewareCanister', function () {
 
             it('Should add each middleware in the canister to the route middleware manager as global middleware for all PUTs', function () {
 
-                expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.callCount).to.equal(2);
+                assert(this.mockRouteMiddlewareManager.addMiddlewareForMethod.calledTwice);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(0).args).to.deep.equal(['PUT', this.mockMiddlewareA]);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(1).args).to.deep.equal(['PUT', this.mockMiddlewareB]);
 
@@ -260,14 +231,13 @@ describe('MiddlewareCanister', function () {
 
             it('Should add each middleware in the canister to the route middleware manager as global middleware for all DELETEs', function () {
 
-                expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.callCount).to.equal(2);
+                assert(this.mockRouteMiddlewareManager.addMiddlewareForMethod.calledTwice);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(0).args).to.deep.equal(['DELETE', this.mockMiddlewareA]);
                 expect(this.mockRouteMiddlewareManager.addMiddlewareForMethod.getCall(1).args).to.deep.equal(['DELETE', this.mockMiddlewareB]);
 
             });
 
         });
-
 
     });
 
