@@ -1,6 +1,6 @@
 {
   "name": "folio.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "DyslexicChris <npm@dyslexicchris.co.uk> (https://github.com/DyslexicChris)",
   "description": "A fluent Node.js HTTP API framework inspired by express",
   "repository": {
@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "underscore": "1.6.0",
-    "guild": "1.1.0"
+    "guild": "1.2.2"
   },
   "devDependencies": {
     "chai": "1.9.0",
