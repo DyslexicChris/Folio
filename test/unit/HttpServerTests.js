@@ -25,6 +25,7 @@ describe('HttpServer', function () {
         });
 
         mockery.registerAllowable('../../lib/HttpServer', true);
+        mockery.registerAllowable('./constants/HTTPConstants', true);
         mockery.registerAllowable('underscore');
         mockery.registerMock('domain', this.mockDomain);
         mockery.registerMock('http', this.mockHttp);
@@ -72,22 +73,22 @@ describe('HttpServer', function () {
 
             });
 
-            describe('On stop(callback)', function(){
+            describe('On stop(callback)', function () {
 
-                beforeEach(function(){
+                beforeEach(function () {
 
                     this.stopCallback = Stubs.newFunction();
                     this.httpServer.stop(this.stopCallback);
 
                 });
 
-                it('Should close the http server', function(){
+                it('Should close the http server', function () {
 
                     assert(this.mockServer.close.calledOnce);
 
                 });
 
-                it('Should call the given callback when done', function(){
+                it('Should call the given callback when done', function () {
 
                     this.mockServer.close.callArg(0);
                     assert(this.stopCallback.calledOnce);
@@ -164,12 +165,6 @@ describe('HttpServer', function () {
                         };
 
                         this.mockDomain.on.callArgWith(1, domainError);
-
-                    });
-
-                    it('Should gracefully shut down the server', function () {
-
-                        assert(this.mockServer.close.calledOnce);
 
                     });
 

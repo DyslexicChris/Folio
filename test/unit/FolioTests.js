@@ -20,22 +20,10 @@ describe('Folio', function () {
         this.RouteHandlerManager.prototype.reset = Stubs.newFunction();
 
         this.RequestHandler = Stubs.newFunction();
-        this.ObjectDecorator = Stubs.newFunction();
-        this.ObjectDecorator.prototype.addDecoration = Stubs.newFunction();
-
-        this.SendObjectDecoration = Stubs.newFunction();
 
         this.HttpServer = Stubs.newFunction();
         this.HttpServer.prototype.start = Stubs.newFunction().callsArg(1);
         this.HttpServer.prototype.stop = Stubs.newFunction().callsArg(0);
-
-        this.ProcessManager = Stubs.newFunction();
-        this.ProcessManager.prototype.cluster = Stubs.newFunction();
-
-        this.JSONBodyParserMiddleware = Stubs.newFunction();
-        this.JSONBodyParserFactory = Stubs.newFunction();
-        this.JSONBodyParserFactory.prototype.newMiddleware = Stubs.newFunction();
-        this.JSONBodyParserFactory.prototype.newMiddleware.returns(this.JSONBodyParserMiddleware);
 
         this.middlewareCaninsterInstance = Stubs.newMiddlewareCaninster();
         this.MiddlewareCanister = Stubs.newFunction();
@@ -47,6 +35,19 @@ describe('Folio', function () {
         this.RouteCanister.new = Stubs.newFunction();
         this.RouteCanister.new.returns(this.routeCanisterInstance);
 
+
+        this.mockRequestDecorator = Stubs.newDecorator();
+        this.mockResponseDecorator = Stubs.newDecorator();
+
+        this.ObjectDecoratorFactory = Stubs.newFunction();
+        this.ObjectDecoratorFactory.prototype.requestDecorator = Stubs.newFunction().returns(this.mockRequestDecorator);
+        this.ObjectDecoratorFactory.prototype.responseDecorator = Stubs.newFunction().returns(this.mockResponseDecorator);
+
+        this.ObjectDecorationFactory = Stubs.newFunction();
+        this.ObjectDecorationFactory.prototype.renderViewDecoration = Stubs.newFunction();
+
+        this.CoreMiddlewareFactory = Stubs.newFunction();
+
         mockery.deregisterAll();
 
         mockery.enable({
@@ -55,7 +56,7 @@ describe('Folio', function () {
         });
 
         mockery.registerAllowable('../../lib/Folio', true);
-        mockery.registerAllowable('underscore');
+        mockery.registerAllowable('./constants/HTTPConstants', true);
         mockery.registerMock('./RouteManager', this.RouteManager);
         mockery.registerMock('./RouteMiddlewareManager', this.RouteMiddlewareManager);
         mockery.registerMock('./RouteHandlerManager', this.RouteHandlerManager);
@@ -63,10 +64,9 @@ describe('Folio', function () {
         mockery.registerMock('./MiddlewareCanister', this.MiddlewareCanister);
         mockery.registerMock('./HttpServer', this.HttpServer);
         mockery.registerMock('./RequestHandler', this.RequestHandler);
-        mockery.registerMock('./ProcessManager', this.ProcessManager);
-        mockery.registerMock('./middleware/JSONBodyParserFactory', this.JSONBodyParserFactory);
-        mockery.registerMock('./decorators/ObjectDecorator', this.ObjectDecorator);
-        mockery.registerMock('./decorators/response-decorations/SendObjectDecoration', this.SendObjectDecoration);
+        mockery.registerMock('./decorators/ObjectDecoratorFactory', this.ObjectDecoratorFactory);
+        mockery.registerMock('./decorators/ObjectDecorationFactory', this.ObjectDecorationFactory);
+        mockery.registerMock('./middleware/CoreMiddlewareFactory', this.CoreMiddlewareFactory);
 
         this.Folio = require('../../lib/Folio');
 
@@ -82,63 +82,62 @@ describe('Folio', function () {
 
         it('Should have a route manager', function () {
 
-            expect(this.folio._routeManager).to.not.be.undefined;
+            expect(this.folio.routeManager).to.not.be.undefined;
 
 
         });
 
         it('Should have a route middleware manager', function () {
 
-            expect(this.folio._routeMiddlewareManager).to.not.be.undefined;
+            expect(this.folio.routeMiddlewareManager).to.not.be.undefined;
 
         });
 
         it('Should have a route handler manager', function () {
 
-            expect(this.folio._routeHandlerManager).to.not.be.undefined;
+            expect(this.folio.routeHandlerManager).to.not.be.undefined;
 
         });
 
         it('Should have a request handler', function () {
 
-            expect(this.folio._requestHandler).to.not.be.undefined;
+            expect(this.folio.requestHandler).to.not.be.undefined;
+
+        });
+
+        it('Should have an object decoration factory', function () {
+
+            expect(this.folio.objectDecorationFactory).to.not.be.undefined;
+
+        });
+
+        it('Should have an object decorator factory', function () {
+
+            expect(this.folio.objectDecoratorFactory).to.not.be.undefined;
 
         });
 
         it('Should have a response decorator', function () {
 
-            expect(this.folio._responseDecorator).to.not.be.undefined;
+            expect(this.folio.responseDecorator).to.not.be.undefined;
 
         });
 
-        it('Should have a \'send object decoration\'', function () {
+        it('Should have a request decorator', function () {
 
-            expect(this.folio._sendObjectDecoration).to.not.be.undefined;
-
-        });
-
-        it('Should add the \'send object decoration\' to the response decorator', function () {
-
-            assert(this.folio._responseDecorator.addDecoration.calledOnce);
-            assert(this.folio._responseDecorator.addDecoration.calledWith(this.folio._sendObjectDecoration));
+            expect(this.folio.requestDecorator).to.not.be.undefined;
 
         });
 
         it('Should have a http server', function () {
 
-            expect(this.folio._httpServer).to.not.be.undefined;
+            expect(this.folio.httpServer).to.not.be.undefined;
 
         });
 
-        it('Should have a process manager', function () {
+        it('Should have a middleware factory', function () {
 
-            expect(this.folio._processManager).to.not.be.undefined;
-
-        });
-
-        it('Should have a JSON Body Parser factory', function () {
-
-            expect(this.folio._jsonBodyParserFactory).to.not.be.undefined;
+            expect(this.folio.middlewareFactory).to.not.be.undefined;
 
         });
 
@@ -230,9 +229,9 @@ describe('Folio', function () {
                 assert(this.RouteCanister.new.calledWith(
                     'GET',
                     '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
+                    this.folio.routeManager,
+                    this.folio.routeMiddlewareManager,
+                    this.folio.routeHandlerManager
                 ));
 
             });
@@ -259,9 +258,9 @@ describe('Folio', function () {
                 assert(this.RouteCanister.new.calledWith(
                     'POST',
                     '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
+                    this.folio.routeManager,
+                    this.folio.routeMiddlewareManager,
+                    this.folio.routeHandlerManager
                 ));
 
             });
@@ -288,9 +287,9 @@ describe('Folio', function () {
                 assert(this.RouteCanister.new.calledWith(
                     'PUT',
                     '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
+                    this.folio.routeManager,
+                    this.folio.routeMiddlewareManager,
+                    this.folio.routeHandlerManager
                 ));
 
             });
@@ -317,9 +316,9 @@ describe('Folio', function () {
                 assert(this.RouteCanister.new.calledWith(
                     'DELETE',
                     '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
+                    this.folio.routeManager,
+                    this.folio.routeMiddlewareManager,
+                    this.folio.routeHandlerManager
                 ));
 
             });
@@ -346,9 +345,9 @@ describe('Folio', function () {
                 assert(this.RouteCanister.new.calledWith(
                     'HEAD',
                     '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
+                    this.folio.routeManager,
+                    this.folio.routeMiddlewareManager,
+                    this.folio.routeHandlerManager
                 ));
 
             });
@@ -389,40 +388,54 @@ describe('Folio', function () {
             });
         });
 
+        describe('On setRenderEngine(renderEngine)', function () {
 
-        describe('On cluster(clusterizedFunction)', function () {
+            describe('First call', function () {
 
-            beforeEach(function () {
-                this.clusterizeFunction = Stubs.newFunction();
-                this.folio.cluster(this.clusterizeFunction);
-            });
+                beforeEach(function () {
 
-            it('Should delegate to the processManager', function () {
-                assert(this.ProcessManager.prototype.cluster.calledOnce);
-                assert(this.ProcessManager.prototype.cluster.calledWithExactly(this.clusterizeFunction));
-            });
+                    this.folio.responseDecorator.addDecoration.reset();
+                    this.mockRenderEngine = {};
+                    this.folio.setRenderEngine(this.mockRenderEngine);
 
-        });
+                });
 
-        describe('On jsonBodyParser()', function () {
+                it('Should set the render engine', function () {
 
-            beforeEach(function () {
+                    expect(this.folio.getRenderEngine()).to.not.be.undefined;
 
-                this.middleware = this.folio.jsonBodyParser();
+                });
 
-            });
+                it('It should add a render view decoration to the response decorator', function () {
 
-            it('Should delegate to the JSON Body Parser factory', function () {
+                    assert(this.folio.responseDecorator.addDecoration.calledOnce);
 
-                expect(this.JSONBodyParserFactory.prototype.newMiddleware.callCount).to.equal(1);
+                });
 
             });
 
-            it('Return the middleware returned by the JSON Body Parser factory', function () {
+            describe('Subsequent calls', function () {
 
-                expect(this.middleware).to.deep.equal(this.JSONBodyParserMiddleware);
+                beforeEach(function () {
+
+                    this.folio.responseDecorator.addDecoration.reset();
+                    this.mockRenderEngine = {};
+                    this.folio.setRenderEngine(this.mockRenderEngine);
+
+                });
+
+                it('Should throw', function () {
+
+                    Assertions.assertThrows(function () {
+
+                        this.folio.setRenderEngine(this.mockRenderEngine);
+
+                    }, 'Render engine already set', this);
+
+                });
 
             });
+
 
         });
 
@@ -436,19 +449,19 @@ describe('Folio', function () {
 
             it('Should reset the route manager', function () {
 
-                assert(this.folio._routeManager.reset.calledOnce);
+                assert(this.folio.routeManager.reset.calledOnce);
 
             });
 
             it('Should reset the route middleware manager', function () {
 
-                assert(this.folio._routeMiddlewareManager.reset.calledOnce);
+                assert(this.folio.routeMiddlewareManager.reset.calledOnce);
 
             });
 
             it('Should reset the route handler manager', function () {
 
-                assert(this.folio._routeHandlerManager.reset.calledOnce);
+                assert(this.folio.routeHandlerManager.reset.calledOnce);
 
             });
 

@@ -7,6 +7,7 @@ module.exports = {
     newResponse: newResponse,
     newRenderEngine: newRenderEngine,
     newDecoration: newDecoration,
+    newDecorator: newDecorator,
     newFunction: newFunction,
     newGuildCacheInstance: newGuildCacheInstance,
     guildCacheModule: guildCacheModule,
@@ -19,9 +20,7 @@ module.exports = {
     HTTPModule: HTTPModule,
     LoggerModule: LoggerModule,
     newLogger: newLogger,
-    newRequestHandler: newRequestHandler,
-    newCluster: newCluster,
-    newOS: newOS
+    newRequestHandler: newRequestHandler
 };
 
 /**
@@ -90,6 +89,18 @@ function newDecoration() {
     return {
         decorate: sinon.stub()
     };
+}
+
+/**
+ *
+ * @returns {{addDecoration: *}}
+ */
+function newDecorator() {
+    'use strict';
+
+    return {
+        addDecoration: sinon.stub()
+    }
 }
 
 /**
@@ -273,30 +284,5 @@ function newRequestHandler() {
 
     return {
         handle: sinon.stub()
-    };
-}
-
-/**
- *
- * @returns {{fork: *, on: *}}
- */
-function newCluster() {
-    'use strict';
-
-    return {
-        fork: sinon.stub(),
-        on: sinon.stub()
-    };
-}
-
-/**
- *
- * @returns {{cpus: *}}
- */
-function newOS() {
-    'use strict';
-
-    return {
-        cpus: sinon.stub()
     };
 }
