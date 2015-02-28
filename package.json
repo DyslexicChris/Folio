@@ -22,7 +22,7 @@
         "guild": "^1.2.2"
     },
     "devDependencies": {
-        "chai": "^^2.1.0",
+        "chai": "^2.1.0",
         "istanbul": "^0.3.6",
         "mocha": "^2.1.0",
         "mockery": "^1.4.0",
