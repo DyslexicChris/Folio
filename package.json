@@ -18,17 +18,17 @@
         "generate-docs": "rm -r ./jsdoc/*; echo \"Generating Documentation...\\n\"; ./node_modules/.bin/jsdoc -r -d ./jsdoc ./lib"
     },
     "dependencies": {
-        "underscore": "1.6.0",
-        "guild": "1.1.0"
+        "underscore": "^1.8.2",
+        "guild": "^1.2.2"
     },
     "devDependencies": {
-        "chai": "1.9.0",
-        "istanbul": "^0.3.0",
-        "mocha": "1.17.1",
-        "mockery": "1.4.0",
-        "sinon": "1.10.3",
-        "coveralls": "2.11.1",
-        "jsdoc": "3.2.2"
+        "chai": "^^2.1.0",
+        "istanbul": "^0.3.6",
+        "mocha": "^2.1.0",
+        "mockery": "^1.4.0",
+        "sinon": "^1.12.2",
+        "coveralls": "^2.11.2",
+        "jsdoc": "^3.2.2"
     },
     "license": "MIT"
 }
