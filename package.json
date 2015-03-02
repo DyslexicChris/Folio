@@ -28,7 +28,7 @@
         "mockery": "^1.4.0",
         "sinon": "^1.12.2",
         "coveralls": "^2.11.2",
-        "jsdoc": "^3.2.2"
+        "jsdoc": "^3.3.0-beta1"
     },
     "license": "MIT"
 }
