@@ -2,12 +2,10 @@ folio.js
 =====
 
 [![npm version](https://img.shields.io/npm/v/folio.js.svg?style=flat)](https://www.npmjs.com/package/folio.js)
-[![License](https://img.shields.io/npm/l/folio.js.svg?style=flat)](https://www.npmjs.com/package/folio.js)
 [![Build Status](https://travis-ci.org/DyslexicChris/Folio.svg?branch=master)](https://travis-ci.org/DyslexicChris/Folio)
 [![Dependency Status](https://david-dm.org/DyslexicChris/Folio.svg)](https://david-dm.org/DyslexicChris/Folio)
 [![devDependency Status](https://david-dm.org/DyslexicChris/Folio/dev-status.svg)](https://david-dm.org/DyslexicChris/Folio#info=devDependencies)
 [![Code Climate](https://codeclimate.com/github/DyslexicChris/Folio/badges/gpa.svg)](https://codeclimate.com/github/DyslexicChris/Folio)
-[![Coverage Status](https://img.shields.io/coveralls/DyslexicChris/Folio.svg)](https://coveralls.io/r/DyslexicChris/Folio)
 
 A fluent Node.js HTTP API framework inspired by express
 

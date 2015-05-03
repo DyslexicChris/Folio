@@ -31,23 +31,24 @@ describe('RequestHandler', function () {
 
             this.mockMatchedRoute = {
                 method: 'test',
-                specification: 'matchSpecification',
-                params: { varA: 'test' }
+                specification: 'matchSpecification'
             };
 
-            this.mockRouteManager = Stubs.newRouteManager();
-            this.mockRouteManager.query = Stubs.newFunction();
-            this.mockRouteManager.query.withArgs('test', '/my-mock-url/match').returns(this.mockMatchedRoute);
+            this.mockRouteResolver = Stubs.newRouteResolver();
+            this.mockRouteResolver.query = Stubs.newFunction();
+            this.mockRouteResolver.query.withArgs('test', '/my-mock-url/match').returns(this.mockMatchedRoute);
+            this.mockRouteResolver.parseParameters = Stubs.newFunction();
+            this.mockRouteResolver.parseParameters.withArgs(this.mockMatchedRoute, '/my-mock-url/match').returns({ varA: 'test' });
 
-            this.mockRouteMiddlewareManager = Stubs.newRouteMiddlewareManager();
-            this.mockRouteMiddlewareManager.getGlobalMiddleware.returns([this.middleware.globalMiddlewareA, this.middleware.globalMiddlewareB]);
-            this.mockRouteMiddlewareManager.getMiddlewareForMethod.withArgs('test').returns([this.middleware.methodMiddlewareA, this.middleware.methodMiddlewareB]);
-            this.mockRouteMiddlewareManager.getMiddlewareForRoute.withArgs('test', 'matchSpecification').returns([this.middleware.routeMiddlewareA, this.middleware.routeMiddlewareB]);
+            this.mockRouteMiddlewareRegistry = Stubs.newRouteMiddlewareRegistry();
+            this.mockRouteMiddlewareRegistry.getGlobalMiddleware.returns([this.middleware.globalMiddlewareA, this.middleware.globalMiddlewareB]);
+            this.mockRouteMiddlewareRegistry.getMiddlewareForMethod.withArgs('test').returns([this.middleware.methodMiddlewareA, this.middleware.methodMiddlewareB]);
+            this.mockRouteMiddlewareRegistry.getMiddlewareForRoute.withArgs(this.mockMatchedRoute).returns([this.middleware.routeMiddlewareA, this.middleware.routeMiddlewareB]);
 
-            this.mockRouteHandlerManager = Stubs.newRouteHandlerManager();
-            this.mockRouteHandlerManager.getHandlerForRoute.withArgs('test', 'matchSpecification').returns(this.routeHandler);
+            this.mockRouteHandlerRegistry = Stubs.newRouteHandlerRegistry();
+            this.mockRouteHandlerRegistry.getHandlerForRoute.withArgs(this.mockMatchedRoute).returns(this.routeHandler);
 
-            this.requestHandler = new RequestHandler(this.mockRouteManager, this.mockRouteMiddlewareManager, this.mockRouteHandlerManager, this.mockRequestDecorator, this.mockResponseDecorator);
+            this.requestHandler = new RequestHandler(this.mockRouteResolver, this.mockRouteMiddlewareRegistry, this.mockRouteHandlerRegistry, this.mockRequestDecorator, this.mockResponseDecorator);
 
         });
 
@@ -73,7 +74,7 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteHandlerManager.getHandlerForRoute = Stubs.newFunction();
+                this.mockRouteHandlerRegistry.getHandlerForRoute = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
@@ -190,7 +191,7 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteMiddlewareManager.getGlobalMiddleware = Stubs.newFunction();
+                this.mockRouteMiddlewareRegistry.getGlobalMiddleware = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
@@ -244,7 +245,7 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteMiddlewareManager.getMiddlewareForMethod = Stubs.newFunction();
+                this.mockRouteMiddlewareRegistry.getMiddlewareForMethod = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
@@ -298,7 +299,7 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteMiddlewareManager.getMiddlewareForRoute = Stubs.newFunction();
+                this.mockRouteMiddlewareRegistry.getMiddlewareForRoute = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });

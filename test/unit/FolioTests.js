@@ -10,14 +10,20 @@ describe('Folio', function () {
 
     beforeEach(function () {
 
-        this.RouteManager = Stubs.newFunction();
-        this.RouteManager.prototype.reset = Stubs.newFunction();
+        this.testRoute = {object:'route'};
+        this.RouteResolver = Stubs.newFunction();
+        this.RouteFactory = Stubs.newFunction();
+        this.RouteFactory.prototype.buildRoute = Stubs.newFunction().returns(this.testRoute);
 
-        this.RouteMiddlewareManager = Stubs.newFunction();
-        this.RouteMiddlewareManager.prototype.reset = Stubs.newFunction();
+        this.RouteSpecificationParser = Stubs.newFunction();
+        this.RouteRegistry = Stubs.newFunction();
+        this.RouteRegistry.prototype.reset = Stubs.newFunction();
 
-        this.RouteHandlerManager = Stubs.newFunction();
-        this.RouteHandlerManager.prototype.reset = Stubs.newFunction();
+        this.RouteMiddlewareRegistry = Stubs.newFunction();
+        this.RouteMiddlewareRegistry.prototype.reset = Stubs.newFunction();
+
+        this.RouteHandlerRegistry = Stubs.newFunction();
+        this.RouteHandlerRegistry.prototype.reset = Stubs.newFunction();
 
         this.RequestHandler = Stubs.newFunction();
 
@@ -55,13 +61,30 @@ describe('Folio', function () {
             useCleanCache: true
         });
 
+
+//        var RouteMiddlewareRegistry = require('./registries/RouteMiddlewareRegistry');
+//        var RouteHandlerRegistry = require('./registries/RouteHandlerRegistry');
+//        var ObjectDecoratorFactory = require('./decorators/ObjectDecoratorFactory');
+//        var ObjectDecorationFactory = require('./decorators/ObjectDecorationFactory');
+//        var RouteCanister = require('./canisters/RouteCanister');
+//        var MiddlewareCanister = require('./canisters/MiddlewareCanister');
+//        var HttpServer = require('./HttpServer');
+//        var RequestHandler = require('./RequestHandler');
+//        var CoreMiddlewareFactory = require('./middleware/CoreMiddlewareFactory');
+//        var HTTPConstants = require('./constants/HTTPConstants');
+
         mockery.registerAllowable('../../lib/Folio', true);
         mockery.registerAllowable('./constants/HTTPConstants', true);
-        mockery.registerMock('./RouteManager', this.RouteManager);
-        mockery.registerMock('./RouteMiddlewareManager', this.RouteMiddlewareManager);
-        mockery.registerMock('./RouteHandlerManager', this.RouteHandlerManager);
-        mockery.registerMock('./RouteCanister', this.RouteCanister);
-        mockery.registerMock('./MiddlewareCanister', this.MiddlewareCanister);
+        mockery.registerMock('./RouteResolver', this.RouteResolver);
+        mockery.registerMock('./RouteFactory', this.RouteFactory);
+        mockery.registerMock('./RouteSpecificationParser', this.RouteSpecificationParser);
+        mockery.registerMock('./registries/RouteRegistry', this.RouteRegistry);
+
+
+        mockery.registerMock('./registries/RouteMiddlewareRegistry', this.RouteMiddlewareRegistry);
+        mockery.registerMock('./registries/RouteHandlerRegistry', this.RouteHandlerRegistry);
+        mockery.registerMock('./canisters/RouteCanister', this.RouteCanister);
+        mockery.registerMock('./canisters/MiddlewareCanister', this.MiddlewareCanister);
         mockery.registerMock('./HttpServer', this.HttpServer);
         mockery.registerMock('./RequestHandler', this.RequestHandler);
         mockery.registerMock('./decorators/ObjectDecoratorFactory', this.ObjectDecoratorFactory);
@@ -80,22 +103,39 @@ describe('Folio', function () {
 
         });
 
-        it('Should have a route manager', function () {
+        it('Should have a route resolver', function () {
 
-            expect(this.folio.routeManager).to.not.be.undefined;
-
-
-        });
-
-        it('Should have a route middleware manager', function () {
-
-            expect(this.folio.routeMiddlewareManager).to.not.be.undefined;
+            expect(this.folio.routeResolver).to.not.be.undefined;
 
         });
 
-        it('Should have a route handler manager', function () {
+        it('Should have a route factory', function () {
 
-            expect(this.folio.routeHandlerManager).to.not.be.undefined;
+            expect(this.folio.routeResolver).to.not.be.undefined;
+
+        });
+
+        it('Should have a route specification parser', function () {
+
+            expect(this.folio.routeSpecificationParser).to.not.be.undefined;
+
+        });
+
+        it('Should have a route registry', function () {
+
+            expect(this.folio.routeRegistry).to.not.be.undefined;
+
+        });
+
+        it('Should have a route middleware registry', function () {
+
+            expect(this.folio.routeMiddlewareRegistry).to.not.be.undefined;
+
+        });
+
+        it('Should have a route handler registry', function () {
+
+            expect(this.folio.routeHandlerRegistry).to.not.be.undefined;
 
         });
 
@@ -223,15 +263,20 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('GET', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
                 assert(this.RouteCanister.new.calledOnce);
                 assert(this.RouteCanister.new.calledWith(
-                    'GET',
-                    '/test/specification',
-                    this.folio.routeManager,
-                    this.folio.routeMiddlewareManager,
-                    this.folio.routeHandlerManager
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
                 ));
 
             });
@@ -252,15 +297,20 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('POST', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
                 assert(this.RouteCanister.new.calledOnce);
                 assert(this.RouteCanister.new.calledWith(
-                    'POST',
-                    '/test/specification',
-                    this.folio.routeManager,
-                    this.folio.routeMiddlewareManager,
-                    this.folio.routeHandlerManager
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
                 ));
 
             });
@@ -281,15 +331,20 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('PUT', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
                 assert(this.RouteCanister.new.calledOnce);
                 assert(this.RouteCanister.new.calledWith(
-                    'PUT',
-                    '/test/specification',
-                    this.folio.routeManager,
-                    this.folio.routeMiddlewareManager,
-                    this.folio.routeHandlerManager
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
                 ));
 
             });
@@ -310,15 +365,20 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('DELETE', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
                 assert(this.RouteCanister.new.calledOnce);
                 assert(this.RouteCanister.new.calledWith(
-                    'DELETE',
-                    '/test/specification',
-                    this.folio.routeManager,
-                    this.folio.routeMiddlewareManager,
-                    this.folio.routeHandlerManager
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
                 ));
 
             });
@@ -339,15 +399,20 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('HEAD', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
                 assert(this.RouteCanister.new.calledOnce);
                 assert(this.RouteCanister.new.calledWith(
-                    'HEAD',
-                    '/test/specification',
-                    this.folio.routeManager,
-                    this.folio.routeMiddlewareManager,
-                    this.folio.routeHandlerManager
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
                 ));
 
             });
@@ -447,21 +512,21 @@ describe('Folio', function () {
 
             });
 
-            it('Should reset the route manager', function () {
+            it('Should reset the route registry', function () {
 
-                assert(this.folio.routeManager.reset.calledOnce);
-
-            });
-
-            it('Should reset the route middleware manager', function () {
-
-                assert(this.folio.routeMiddlewareManager.reset.calledOnce);
+                assert(this.folio.routeRegistry.reset.calledOnce);
 
             });
 
-            it('Should reset the route handler manager', function () {
+            it('Should reset the route middleware registry', function () {
 
-                assert(this.folio.routeHandlerManager.reset.calledOnce);
+                assert(this.folio.routeMiddlewareRegistry.reset.calledOnce);
+
+            });
+
+            it('Should reset the route handler registry', function () {
+
+                assert(this.folio.routeHandlerRegistry.reset.calledOnce);
 
             });
 

@@ -11,9 +11,10 @@ module.exports = {
     newFunction: newFunction,
     newGuildCacheInstance: newGuildCacheInstance,
     guildCacheModule: guildCacheModule,
-    newRouteManager: newRouteManager,
-    newRouteMiddlewareManager: newRouteMiddlewareManager,
-    newRouteHandlerManager: newRouteHandlerManager,
+    newRouteResolver: newRouteResolver,
+    newRouteRegistry: newRouteRegistry,
+    newRouteMiddlewareRegistry: newRouteMiddlewareRegistry,
+    newRouteHandlerRegistry: newRouteHandlerRegistry,
     newMiddlewareCaninster: newMiddlewareCaninster,
     newDomain: newDomain,
     newHTTPServer: newHTTPServer,
@@ -144,7 +145,7 @@ function guildCacheModule() {
  *
  * @returns {{addRoute: *}}
  */
-function newRouteManager() {
+function newRouteResolver() {
     'use strict';
 
     return {
@@ -155,9 +156,23 @@ function newRouteManager() {
 
 /**
  *
+ * @returns {{addRoute: *, routes: *, reset: *}}
+ */
+function newRouteRegistry() {
+    'use strict';
+
+    return {
+        addRoute: sinon.stub(),
+        routes: sinon.stub(),
+        reset: sinon.stub()
+    };
+}
+
+/**
+ *
  * @returns {{addMiddlewareForRoute: *}}
  */
-function newRouteMiddlewareManager() {
+function newRouteMiddlewareRegistry() {
     'use strict';
 
     return  {
@@ -175,7 +190,7 @@ function newRouteMiddlewareManager() {
  *
  * @returns {{addHandlerForRoute: *}}
  */
-function newRouteHandlerManager() {
+function newRouteHandlerRegistry() {
     'use strict';
 
     return {
