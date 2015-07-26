@@ -1,143 +1,54 @@
 var expect = require('chai').expect;
-var sinon = require('sinon');
-var _ = require('underscore');
+var assert = require('chai').assert;
+var Stubs = require('./Helpers/Stubs');
+var Assertions = require('./Helpers/Assertions');
 var RequestHandler = require('../../lib/RequestHandler');
 
 describe('RequestHandler', function () {
-
-    beforeEach(function () {
-
-        this.spies = {};
-
-    });
-
-    afterEach(function () {
-        _.each(this.spies, function (spy) {
-            spy.restore();
-        })
-    });
 
     describe('On new', function () {
 
         beforeEach(function () {
 
-            var thisTest = this;
+            this.mockRequest = Stubs.newRequest();
+            this.mockRequest.url = '/my-mock-url/match?query=test';
+            this.mockRequest.method = 'test';
 
-            this.mockRouteManager = {
-                object: 'mockRouteManager'
-            };
+            this.mockResponse = Stubs.newResponse();
 
-            this.mockRouteMiddlewareManager = {
-                object: 'mockRouteMiddlewareManager'
-            };
+            this.mockResponseDecorator = Stubs.newDecoration();
+            this.mockRequestDecorator = Stubs.newDecoration();
 
-            this.mockRouteHandlerManager = {
-                object: 'mockRouteHandlerManager'
-            };
-
-            this.mockRequest = {
-                url: '/my-mock-url/match?query=test',
-                method: 'test'
-            };
-
-            this.mockResponse = {
-                end: function () {
-                }
-            };
-
-            this.mockMathedRoute = {
-                method: 'test',
-                specification: 'matchSpecification',
-                params: { varA: 'test' }
-            };
-
-            this.mockRouteManager.query = function (method, path) {
-                if (method == 'test' && path == '/my-mock-url/match') {
-                    return thisTest.mockMathedRoute;
-                }
-            };
-
-            this.mockResponseDecorator = {
-                decorate: function () {
-                }
-            };
-
-            this.mockRequestDecorator = {
-                decorate: function () {
-
-                }
-            };
-
-            this.middleware = {
-            };
-
+            this.middleware = {};
             this.middleware.globalMiddlewareA = _newNoopMiddleware();
             this.middleware.globalMiddlewareB = _newNoopMiddleware();
             this.middleware.methodMiddlewareA = _newNoopMiddleware();
             this.middleware.methodMiddlewareB = _newNoopMiddleware();
             this.middleware.routeMiddlewareA = _newNoopMiddleware();
             this.middleware.routeMiddlewareB = _newNoopMiddleware();
-            this.routeHandler = function () {
+
+            this.routeHandler = Stubs.newFunction();
+
+            this.mockMatchedRoute = {
+                method: 'test',
+                specification: 'matchSpecification'
             };
 
-            this.mockRouteMiddlewareManager.getGlobalMiddleware = function () {
-                return [thisTest.middleware.globalMiddlewareA, thisTest.middleware.globalMiddlewareB];
-            };
+            this.mockRouteResolver = Stubs.newRouteResolver();
+            this.mockRouteResolver.query = Stubs.newFunction();
+            this.mockRouteResolver.query.withArgs('test', '/my-mock-url/match').returns(this.mockMatchedRoute);
+            this.mockRouteResolver.parseParameters = Stubs.newFunction();
+            this.mockRouteResolver.parseParameters.withArgs(this.mockMatchedRoute, '/my-mock-url/match').returns({ varA: 'test' });
 
-            this.mockRouteMiddlewareManager.getMiddlewareForMethod = function (method) {
-                if (method == 'test') {
-                    return [thisTest.middleware.methodMiddlewareA, thisTest.middleware.methodMiddlewareB];
-                }
-            };
+            this.mockRouteMiddlewareRegistry = Stubs.newRouteMiddlewareRegistry();
+            this.mockRouteMiddlewareRegistry.getGlobalMiddleware.returns([this.middleware.globalMiddlewareA, this.middleware.globalMiddlewareB]);
+            this.mockRouteMiddlewareRegistry.getMiddlewareForMethod.withArgs('test').returns([this.middleware.methodMiddlewareA, this.middleware.methodMiddlewareB]);
+            this.mockRouteMiddlewareRegistry.getMiddlewareForRoute.withArgs(this.mockMatchedRoute).returns([this.middleware.routeMiddlewareA, this.middleware.routeMiddlewareB]);
 
-            this.mockRouteMiddlewareManager.getMiddlewareForRoute = function (method, specification) {
-                if (method == 'test' && specification == 'matchSpecification') {
-                    return [thisTest.middleware.routeMiddlewareA, thisTest.middleware.routeMiddlewareB];
-                }
-            };
+            this.mockRouteHandlerRegistry = Stubs.newRouteHandlerRegistry();
+            this.mockRouteHandlerRegistry.getHandlerForRoute.withArgs(this.mockMatchedRoute).returns(this.routeHandler);
 
-            this.mockRouteHandlerManager.getHandlerForRoute = function (method, specification) {
-                if (method == 'test' && specification == 'matchSpecification') {
-                    return thisTest.routeHandler;
-                }
-            };
-
-            this.spies.globalMiddlewareA = sinon.spy(this.middleware, 'globalMiddlewareA');
-            this.spies.globalMiddlewareB = sinon.spy(this.middleware, 'globalMiddlewareB');
-            this.spies.methodMiddlewareA = sinon.spy(this.middleware, 'methodMiddlewareA');
-            this.spies.methodMiddlewareB = sinon.spy(this.middleware, 'methodMiddlewareB');
-            this.spies.routeMiddlewareA = sinon.spy(this.middleware, 'routeMiddlewareA');
-            this.spies.routeMiddlewareB = sinon.spy(this.middleware, 'routeMiddlewareB');
-            this.spies.routeHandler = sinon.spy(this, 'routeHandler');
-            this.spies.responseEnd = sinon.spy(this.mockResponse, 'end');
-            this.spies.responseDecoratorDecorate = sinon.spy(this.mockResponseDecorator, 'decorate');
-            this.spies.requestDecoratorDecorate = sinon.spy(this.mockRequestDecorator, 'decorate');
-
-            this.requestHandler = new RequestHandler(this.mockRouteManager, this.mockRouteMiddlewareManager, this.mockRouteHandlerManager, this.mockRequestDecorator, this.mockResponseDecorator);
-
-        });
-
-        it('Should have a route manager', function () {
-
-            expect(this.requestHandler._routeManager).to.deep.equal(this.mockRouteManager);
-
-        });
-
-        it('Should have a route middleware manager', function () {
-
-            expect(this.requestHandler._routeMiddlewareManager).to.deep.equal(this.mockRouteMiddlewareManager);
-
-        });
-
-        it('Should have a route handler manager', function () {
-
-            expect(this.requestHandler._routeHandlerManager).to.deep.equal(this.mockRouteHandlerManager);
-
-        });
-
-        it('Should have a response decorator', function () {
-
-            expect(this.requestHandler._responseDecorator).to.not.equal(undefined)
+            this.requestHandler = new RequestHandler(this.mockRouteResolver, this.mockRouteMiddlewareRegistry, this.mockRouteHandlerRegistry, this.mockRequestDecorator, this.mockResponseDecorator);
 
         });
 
@@ -145,10 +56,7 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRequest = {
-                    url: '/my-mock-url/no-match?query=test'
-                };
-
+                this.mockRequest.url = '/my-mock-url/no-match?query=test';
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
@@ -156,7 +64,7 @@ describe('RequestHandler', function () {
             it('Should send a 404 response', function () {
 
                 expect(this.mockResponse.statusCode).to.equal(404);
-                expect(this.mockResponse.end.callCount).to.equal(1);
+                assert(this.mockResponse.end.calledOnce);
 
             });
 
@@ -166,55 +74,54 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteHandlerManager.getHandlerForRoute = function (method, specification) {
-                };
-
+                this.mockRouteHandlerRegistry.getHandlerForRoute = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
 
             it('Should execute all global middleware', function () {
 
-                expect(this.middleware.globalMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.globalMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.globalMiddlewareA.calledOnce);
+                assert(this.middleware.globalMiddlewareB.calledOnce);
 
             });
 
             it('Should execute all method based middleware', function () {
 
-                expect(this.middleware.methodMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.methodMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.methodMiddlewareA.calledOnce);
+                assert(this.middleware.methodMiddlewareB.calledOnce);
 
             });
 
             it('Should execute all route based middleware', function () {
 
-                expect(this.middleware.routeMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.routeMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.routeMiddlewareA.calledOnce);
+                assert(this.middleware.routeMiddlewareB.calledOnce);
 
             });
 
             it('Should decorate the request using the request decorator', function () {
 
-                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockRequestDecorator.decorate.calledOnce);
 
             });
 
             it('Should decorate the response using the response decorator', function () {
 
-                expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockResponseDecorator.decorate.calledOnce);
 
             });
 
             it('Should attach the route parameters to the request object', function () {
 
                 expect(this.mockRequest.params).to.deep.equal({ varA: 'test' });
+
             });
 
             it('Should send a 501 response', function () {
 
                 expect(this.mockResponse.statusCode).to.equal(501);
-                expect(this.mockResponse.end.callCount).to.equal(1);
+                assert(this.mockResponse.end.calledOnce);
 
             });
 
@@ -230,40 +137,40 @@ describe('RequestHandler', function () {
 
             it('Should not handle the response itself', function () {
 
-                expect(this.mockResponse.end.callCount).to.equal(0);
+                assert(this.mockResponse.end.notCalled);
 
             });
 
             it('Should execute all global middleware', function () {
 
-                expect(this.middleware.globalMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.globalMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.globalMiddlewareA.calledOnce);
+                assert(this.middleware.globalMiddlewareB.calledOnce);
 
             });
 
             it('Should execute all method based middleware', function () {
 
-                expect(this.middleware.methodMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.methodMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.methodMiddlewareA.calledOnce);
+                assert(this.middleware.methodMiddlewareB.calledOnce);
 
             });
 
             it('Should execute all route based middleware', function () {
 
-                expect(this.middleware.routeMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.routeMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.routeMiddlewareA.calledOnce);
+                assert(this.middleware.routeMiddlewareB.calledOnce);
 
             });
 
             it('Should decorate the request using the request decorator', function () {
 
-                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockRequestDecorator.decorate.calledOnce);
 
             });
 
             it('Should decorate the response using the response decorator', function () {
 
-                expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockResponseDecorator.decorate.calledOnce);
 
             });
 
@@ -274,7 +181,7 @@ describe('RequestHandler', function () {
 
             it('Should execute the route handler', function () {
 
-                expect(this.routeHandler.callCount).to.equal(1);
+                assert(this.routeHandler.calledOnce);
 
             });
 
@@ -284,42 +191,40 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteMiddlewareManager.getGlobalMiddleware = function () {
-                };
-
+                this.mockRouteMiddlewareRegistry.getGlobalMiddleware = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
 
             it('Should not handle the response itself', function () {
 
-                expect(this.mockResponse.end.callCount).to.equal(0);
+                assert(this.mockResponse.end.notCalled);
 
             });
 
             it('Should execute all method based middleware', function () {
 
-                expect(this.middleware.methodMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.methodMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.methodMiddlewareA.calledOnce);
+                assert(this.middleware.methodMiddlewareB.calledOnce);
 
             });
 
             it('Should execute all route based middleware', function () {
 
-                expect(this.middleware.routeMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.routeMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.routeMiddlewareA.calledOnce);
+                assert(this.middleware.routeMiddlewareB.calledOnce);
 
             });
 
             it('Should decorate the request using the request decorator', function () {
 
-                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockRequestDecorator.decorate.calledOnce);
 
             });
 
             it('Should decorate the response using the response decorator', function () {
 
-                expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockResponseDecorator.decorate.calledOnce);
 
             });
 
@@ -330,7 +235,7 @@ describe('RequestHandler', function () {
 
             it('Should execute the route handler', function () {
 
-                expect(this.routeHandler.callCount).to.equal(1);
+                assert(this.routeHandler.calledOnce);
 
             });
 
@@ -340,42 +245,40 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteMiddlewareManager.getMiddlewareForMethod = function (method) {
-                };
-
+                this.mockRouteMiddlewareRegistry.getMiddlewareForMethod = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
 
             it('Should not handle the response itself', function () {
 
-                expect(this.mockResponse.end.callCount).to.equal(0);
+                assert(this.mockResponse.end.notCalled);
 
             });
 
             it('Should execute all global middleware', function () {
 
-                expect(this.middleware.globalMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.globalMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.globalMiddlewareA.calledOnce);
+                assert(this.middleware.globalMiddlewareB.calledOnce);
 
             });
 
             it('Should execute all route based middleware', function () {
 
-                expect(this.middleware.routeMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.routeMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.routeMiddlewareA.calledOnce);
+                assert(this.middleware.routeMiddlewareB.calledOnce);
 
             });
 
             it('Should decorate the request using the request decorator', function () {
 
-                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockRequestDecorator.decorate.calledOnce);
 
             });
 
             it('Should decorate the response using the response decorator', function () {
 
-                expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockResponseDecorator.decorate.calledOnce);
 
             });
 
@@ -386,7 +289,7 @@ describe('RequestHandler', function () {
 
             it('Should execute the route handler', function () {
 
-                expect(this.routeHandler.callCount).to.equal(1);
+                assert(this.routeHandler.calledOnce);
 
             });
 
@@ -396,53 +299,52 @@ describe('RequestHandler', function () {
 
             beforeEach(function () {
 
-                this.mockRouteMiddlewareManager.getMiddlewareForRoute = function (method, specification) {
-                };
-
+                this.mockRouteMiddlewareRegistry.getMiddlewareForRoute = Stubs.newFunction();
                 this.requestHandler.handle(this.mockRequest, this.mockResponse);
 
             });
 
             it('Should not handle the response itself', function () {
 
-                expect(this.mockResponse.end.callCount).to.equal(0);
+                assert(this.mockResponse.end.notCalled);
 
             });
 
             it('Should execute all global middleware', function () {
 
-                expect(this.middleware.globalMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.globalMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.globalMiddlewareA.calledOnce);
+                assert(this.middleware.globalMiddlewareB.calledOnce);
 
             });
 
             it('Should execute all method based middleware', function () {
 
-                expect(this.middleware.methodMiddlewareA.callCount).to.equal(1);
-                expect(this.middleware.methodMiddlewareB.callCount).to.equal(1);
+                assert(this.middleware.methodMiddlewareA.calledOnce);
+                assert(this.middleware.methodMiddlewareB.calledOnce);
 
             });
 
             it('Should decorate the request using the request decorator', function () {
 
-                expect(this.mockRequestDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockRequestDecorator.decorate.calledOnce);
 
             });
 
             it('Should decorate the response using the response decorator', function () {
 
-                expect(this.mockResponseDecorator.decorate.callCount).to.equal(1);
+                assert(this.mockResponseDecorator.decorate.calledOnce);
 
             });
 
             it('Should attach the route parameters to the request object', function () {
 
                 expect(this.mockRequest.params).to.deep.equal({ varA: 'test' });
+
             });
 
             it('Should execute the route handler', function () {
 
-                expect(this.routeHandler.callCount).to.equal(1);
+                assert(this.routeHandler.calledOnce);
 
             });
 
@@ -462,7 +364,8 @@ describe('RequestHandler', function () {
 function _newNoopMiddleware() {
     'use strict';
 
-    return function (request, response, next) {
-        next();
-    };
+    var middleware = Stubs.newFunction();
+    middleware.callsArg(2);
+
+    return middleware;
 }

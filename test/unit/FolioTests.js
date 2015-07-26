@@ -1,6 +1,8 @@
-var _ = require('underscore');
 var expect = require('chai').expect;
+var assert = require('chai').assert;
 var sinon = require('sinon');
+var Stubs = require('./Helpers/Stubs');
+var Assertions = require('./Helpers/Assertions');
 var mockery = require('mockery');
 
 
@@ -8,105 +10,49 @@ describe('Folio', function () {
 
     beforeEach(function () {
 
-        var thisTest = this;
+        this.testRoute = {object:'route'};
+        this.RouteResolver = Stubs.newFunction();
+        this.RouteFactory = Stubs.newFunction();
+        this.RouteFactory.prototype.buildRoute = Stubs.newFunction().returns(this.testRoute);
 
-        this.RouteManager = function () {
-            this.object = 'routeManager'
-            this.reset = function () {
-            };
-        };
-        this.RouteMiddlewareManager = function () {
-            this.object = 'routeMiddlewareManager'
-            this.reset = function () {
-            };
-        };
-        this.RouteHandlerManager = function () {
-            this.object = 'routeHandlerManager'
-            this.reset = function () {
-            };
-        };
-        this.RequestHandler = function () {
-            this.object = 'requestHandler'
-        };
+        this.RouteSpecificationParser = Stubs.newFunction();
+        this.RouteRegistry = Stubs.newFunction();
+        this.RouteRegistry.prototype.reset = Stubs.newFunction();
 
-        this.ObjectDecorator = function () {
-            this.object = 'objectDecorator';
-        };
+        this.RouteMiddlewareRegistry = Stubs.newFunction();
+        this.RouteMiddlewareRegistry.prototype.reset = Stubs.newFunction();
 
-        this.ObjectDecorator.prototype.addDecoration = function () {
-        };
+        this.RouteHandlerRegistry = Stubs.newFunction();
+        this.RouteHandlerRegistry.prototype.reset = Stubs.newFunction();
 
-        this.SendObjectDecoration = function () {
-            this.object = 'sendObjectDecorator'
-        };
+        this.RequestHandler = Stubs.newFunction();
 
-        this.HttpServer = function () {
-            this.object = 'httpServer'
-        };
+        this.HttpServer = Stubs.newFunction();
+        this.HttpServer.prototype.start = Stubs.newFunction().callsArg(1);
+        this.HttpServer.prototype.stop = Stubs.newFunction().callsArg(0);
 
-        this.HttpServer.prototype.start = function (port, callback) {
-            callback();
-        };
+        this.middlewareCaninsterInstance = Stubs.newMiddlewareCaninster();
+        this.MiddlewareCanister = Stubs.newFunction();
+        this.MiddlewareCanister.new = Stubs.newFunction();
+        this.MiddlewareCanister.new.returns(this.middlewareCaninsterInstance);
 
-        this.HttpServer.prototype.stop = function (callback) {
-            callback();
-        };
-
-        this.ProcessManager = function () {
-            this.object = 'processManager'
-        };
-
-        this.ProcessManager.prototype.cluster = function () {
-        };
-
-        this.JSONBodyParserMiddleware = function () {
-        };
-
-        this.JSONBodyParserFactory = function () {
-        };
-
-        this.JSONBodyParserFactory.prototype.newMiddleware = function () {
-            return thisTest.JSONBodyParserMiddleware;
-        };
-
-        /* ---------------------
-         Mock MiddlewareCanister
-         --------------------- */
-
-        this.middlewareCaninsterInstance = {
-            addMiddleware: function () {
-            }
-        };
-
-        this.MiddlewareCanister = {
-            new: function () {
-                return thisTest.middlewareCaninsterInstance;
-            }
-        };
-
-        /* ---------------------
-         Mock RouteCanister
-         --------------------- */
-
-        this.routeCanisterInstance = {
-        };
-
-        this.RouteCanister = {
-            new: function () {
-                return thisTest.routeCanisterInstance;
-            }
-        };
+        this.routeCanisterInstance = {};
+        this.RouteCanister = Stubs.newFunction();
+        this.RouteCanister.new = Stubs.newFunction();
+        this.RouteCanister.new.returns(this.routeCanisterInstance);
 
 
-        this.spies = {};
-        this.spies.middlewareCaninsterInstanceAddMiddleware = sinon.spy(this.middlewareCaninsterInstance, 'addMiddleware');
-        this.spies.middlewareCanisterNew = sinon.spy(this.MiddlewareCanister, 'new');
-        this.spies.routeCanisterNew = sinon.spy(this.RouteCanister, 'new');
-        this.spies.httpServerStart = sinon.spy(this.HttpServer.prototype, 'start');
-        this.spies.httpServerStop = sinon.spy(this.HttpServer.prototype, 'stop');
-        this.spies.processManagerClusterize = sinon.spy(this.ProcessManager.prototype, 'cluster');
-        this.spies.jsonBodyParserFactoryNewMiddleware = sinon.spy(this.JSONBodyParserFactory.prototype, 'newMiddleware');
-        this.spies.objectDecoratorAddDecorator = sinon.spy(this.ObjectDecorator.prototype, 'addDecoration');
+        this.mockRequestDecorator = Stubs.newDecorator();
+        this.mockResponseDecorator = Stubs.newDecorator();
+
+        this.ObjectDecoratorFactory = Stubs.newFunction();
+        this.ObjectDecoratorFactory.prototype.requestDecorator = Stubs.newFunction().returns(this.mockRequestDecorator);
+        this.ObjectDecoratorFactory.prototype.responseDecorator = Stubs.newFunction().returns(this.mockResponseDecorator);
+
+        this.ObjectDecorationFactory = Stubs.newFunction();
+        this.ObjectDecorationFactory.prototype.renderViewDecoration = Stubs.newFunction();
+
+        this.CoreMiddlewareFactory = Stubs.newFunction();
 
         mockery.deregisterAll();
 
@@ -116,29 +62,37 @@ describe('Folio', function () {
         });
 
 
+//        var RouteMiddlewareRegistry = require('./registries/RouteMiddlewareRegistry');
+//        var RouteHandlerRegistry = require('./registries/RouteHandlerRegistry');
+//        var ObjectDecoratorFactory = require('./decorators/ObjectDecoratorFactory');
+//        var ObjectDecorationFactory = require('./decorators/ObjectDecorationFactory');
+//        var RouteCanister = require('./canisters/RouteCanister');
+//        var MiddlewareCanister = require('./canisters/MiddlewareCanister');
+//        var HttpServer = require('./HttpServer');
+//        var RequestHandler = require('./RequestHandler');
+//        var CoreMiddlewareFactory = require('./middleware/CoreMiddlewareFactory');
+//        var HTTPConstants = require('./constants/HTTPConstants');
+
         mockery.registerAllowable('../../lib/Folio', true);
-        mockery.registerAllowable('underscore');
-        mockery.registerMock('./RouteManager', this.RouteManager);
-        mockery.registerMock('./RouteMiddlewareManager', this.RouteMiddlewareManager);
-        mockery.registerMock('./RouteHandlerManager', this.RouteHandlerManager);
-        mockery.registerMock('./RouteCanister', this.RouteCanister);
-        mockery.registerMock('./MiddlewareCanister', this.MiddlewareCanister);
+        mockery.registerAllowable('./constants/HTTPConstants', true);
+        mockery.registerMock('./RouteResolver', this.RouteResolver);
+        mockery.registerMock('./RouteFactory', this.RouteFactory);
+        mockery.registerMock('./RouteSpecificationParser', this.RouteSpecificationParser);
+        mockery.registerMock('./registries/RouteRegistry', this.RouteRegistry);
+
+
+        mockery.registerMock('./registries/RouteMiddlewareRegistry', this.RouteMiddlewareRegistry);
+        mockery.registerMock('./registries/RouteHandlerRegistry', this.RouteHandlerRegistry);
+        mockery.registerMock('./canisters/RouteCanister', this.RouteCanister);
+        mockery.registerMock('./canisters/MiddlewareCanister', this.MiddlewareCanister);
         mockery.registerMock('./HttpServer', this.HttpServer);
         mockery.registerMock('./RequestHandler', this.RequestHandler);
-        mockery.registerMock('./ProcessManager', this.ProcessManager);
-        mockery.registerMock('./middleware/JSONBodyParserFactory', this.JSONBodyParserFactory);
-        mockery.registerMock('./decorators/ObjectDecorator', this.ObjectDecorator);
-        mockery.registerMock('./decorators/response-decorations/SendObjectDecoration', this.SendObjectDecoration);
+        mockery.registerMock('./decorators/ObjectDecoratorFactory', this.ObjectDecoratorFactory);
+        mockery.registerMock('./decorators/ObjectDecorationFactory', this.ObjectDecorationFactory);
+        mockery.registerMock('./middleware/CoreMiddlewareFactory', this.CoreMiddlewareFactory);
 
         this.Folio = require('../../lib/Folio');
 
-
-    });
-
-    afterEach(function () {
-        _.each(this.spies, function (spy) {
-            spy.restore();
-        })
     });
 
     describe('On new', function () {
@@ -149,65 +103,81 @@ describe('Folio', function () {
 
         });
 
-        it('Should have a route manager', function () {
+        it('Should have a route resolver', function () {
 
-            expect(this.folio._routeManager).to.not.be.undefined;
-
-
-        });
-
-        it('Should have a route middleware manager', function () {
-
-            expect(this.folio._routeMiddlewareManager).to.not.be.undefined;
+            expect(this.folio.routeResolver).to.not.be.undefined;
 
         });
 
-        it('Should have a route handler manager', function () {
+        it('Should have a route factory', function () {
 
-            expect(this.folio._routeHandlerManager).to.not.be.undefined;
+            expect(this.folio.routeResolver).to.not.be.undefined;
+
+        });
+
+        it('Should have a route specification parser', function () {
+
+            expect(this.folio.routeSpecificationParser).to.not.be.undefined;
+
+        });
+
+        it('Should have a route registry', function () {
+
+            expect(this.folio.routeRegistry).to.not.be.undefined;
+
+        });
+
+        it('Should have a route middleware registry', function () {
+
+            expect(this.folio.routeMiddlewareRegistry).to.not.be.undefined;
+
+        });
+
+        it('Should have a route handler registry', function () {
+
+            expect(this.folio.routeHandlerRegistry).to.not.be.undefined;
 
         });
 
         it('Should have a request handler', function () {
 
-            expect(this.folio._requestHandler).to.not.be.undefined;
+            expect(this.folio.requestHandler).to.not.be.undefined;
+
+        });
+
+        it('Should have an object decoration factory', function () {
+
+            expect(this.folio.objectDecorationFactory).to.not.be.undefined;
+
+        });
+
+        it('Should have an object decorator factory', function () {
+
+            expect(this.folio.objectDecoratorFactory).to.not.be.undefined;
 
         });
 
         it('Should have a response decorator', function () {
 
-            expect(this.folio._responseDecorator).to.not.be.undefined;
+            expect(this.folio.responseDecorator).to.not.be.undefined;
 
         });
 
-        it('Should have a \'send object decoration\'', function () {
+        it('Should have a request decorator', function () {
 
-            expect(this.folio._sendObjectDecoration).to.not.be.undefined;
-
-        });
-
-        it('Should add the \'send object decoration\' to the response decorator', function () {
-
-            expect(this.folio._responseDecorator.addDecoration.callCount).to.equal(1);
-            expect(this.folio._responseDecorator.addDecoration.getCall(0).args).to.deep.equal([this.folio._sendObjectDecoration]);
+            expect(this.folio.requestDecorator).to.not.be.undefined;
 
         });
 
         it('Should have a http server', function () {
 
-            expect(this.folio._httpServer).to.not.be.undefined;
+            expect(this.folio.httpServer).to.not.be.undefined;
 
         });
 
-        it('Should have a process manager', function () {
+        it('Should have a middleware factory', function () {
 
-            expect(this.folio._processManager).to.not.be.undefined;
-
-        });
-
-        it('Should have a JSON Body Parser factory', function () {
-
-            expect(this.folio._jsonBodyParserFactory).to.not.be.undefined;
+            expect(this.folio.middlewareFactory).to.not.be.undefined;
 
         });
 
@@ -215,9 +185,7 @@ describe('Folio', function () {
 
             beforeEach(function () {
 
-                this.middlewareA = function () {
-                };
-
+                this.middlewareA = Stubs.newFunction();
                 this.result = this.folio.use(this.middlewareA);
 
             });
@@ -230,14 +198,14 @@ describe('Folio', function () {
 
             it('The middleware should have been constructed correctly', function () {
 
-                expect(this.MiddlewareCanister.new.callCount).to.equal(1);
+                assert(this.MiddlewareCanister.new.calledOnce);
 
             });
 
             it('Should add the middleware to the middleware canister', function () {
 
-                expect(this.middlewareCaninsterInstance.addMiddleware.callCount).to.equal(1);
-                expect(this.middlewareCaninsterInstance.addMiddleware.getCall(0).args).to.deep.equal([this.middlewareA]);
+                assert(this.middlewareCaninsterInstance.addMiddleware.calledOnce);
+                assert(this.middlewareCaninsterInstance.addMiddleware.calledWith(this.middlewareA));
 
             });
 
@@ -247,11 +215,8 @@ describe('Folio', function () {
 
             beforeEach(function () {
 
-                this.middlewareA = function () {
-                };
-
-                this.middlewareB = function () {
-                };
+                this.middlewareA = Stubs.newFunction();
+                this.middlewareB = Stubs.newFunction();
 
                 this.result = this.folio.use(this.middlewareA, this.middlewareB);
 
@@ -265,14 +230,14 @@ describe('Folio', function () {
 
             it('The middleware should have been constructed correctly', function () {
 
-                expect(this.MiddlewareCanister.new.callCount).to.equal(1);
+                assert(this.MiddlewareCanister.new.calledOnce);
 
             });
 
             it('Should add the middleware to the middleware canister', function () {
 
-                expect(this.middlewareCaninsterInstance.addMiddleware.callCount).to.equal(1);
-                expect(this.middlewareCaninsterInstance.addMiddleware.getCall(0).args).to.deep.equal([this.middlewareA, this.middlewareB]);
+                assert(this.middlewareCaninsterInstance.addMiddleware.calledOnce);
+                assert(this.middlewareCaninsterInstance.addMiddleware.calledWith(this.middlewareA, this.middlewareB));
 
             });
 
@@ -282,11 +247,9 @@ describe('Folio', function () {
 
             it('Should throw an error', function () {
 
-                var thisTest = this;
-
-                expect(function () {
-                    thisTest.folio.use()
-                }).to.throw('No middleware supplied');
+                Assertions.assertThrows(function () {
+                    this.folio.use();
+                }, 'No middleware supplied', this);
 
             });
 
@@ -300,16 +263,21 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('GET', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
-                expect(this.RouteCanister.new.callCount).to.equal(1);
-                expect(this.RouteCanister.new.getCall(0).args).to.deep.equal([
-                    'GET',
-                    '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
-                ]);
+                assert(this.RouteCanister.new.calledOnce);
+                assert(this.RouteCanister.new.calledWith(
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
+                ));
 
             });
 
@@ -329,16 +297,21 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('POST', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
-                expect(this.RouteCanister.new.callCount).to.equal(1);
-                expect(this.RouteCanister.new.getCall(0).args).to.deep.equal([
-                    'POST',
-                    '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
-                ]);
+                assert(this.RouteCanister.new.calledOnce);
+                assert(this.RouteCanister.new.calledWith(
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
+                ));
 
             });
 
@@ -358,16 +331,21 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('PUT', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
-                expect(this.RouteCanister.new.callCount).to.equal(1);
-                expect(this.RouteCanister.new.getCall(0).args).to.deep.equal([
-                    'PUT',
-                    '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
-                ]);
+                assert(this.RouteCanister.new.calledOnce);
+                assert(this.RouteCanister.new.calledWith(
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
+                ));
 
             });
 
@@ -387,16 +365,21 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('DELETE', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
-                expect(this.RouteCanister.new.callCount).to.equal(1);
-                expect(this.RouteCanister.new.getCall(0).args).to.deep.equal([
-                    'DELETE',
-                    '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
-                ]);
+                assert(this.RouteCanister.new.calledOnce);
+                assert(this.RouteCanister.new.calledWith(
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
+                ));
 
             });
 
@@ -416,16 +399,21 @@ describe('Folio', function () {
 
             });
 
+            it('Should have the route factory build a route', function () {
+
+                assert(this.folio.routeFactory.buildRoute.calledWith('HEAD', '/test/specification'));
+
+            });
+
             it('A route canister should have been constructed correctly', function () {
 
-                expect(this.RouteCanister.new.callCount).to.equal(1);
-                expect(this.RouteCanister.new.getCall(0).args).to.deep.equal([
-                    'HEAD',
-                    '/test/specification',
-                    this.folio._routeManager,
-                    this.folio._routeMiddlewareManager,
-                    this.folio._routeHandlerManager
-                ]);
+                assert(this.RouteCanister.new.calledOnce);
+                assert(this.RouteCanister.new.calledWith(
+                    this.testRoute,
+                    this.folio.routeRegistry,
+                    this.folio.routeMiddlewareRegistry,
+                    this.folio.routeHandlerRegistry
+                ));
 
             });
 
@@ -440,97 +428,105 @@ describe('Folio', function () {
         describe('On start(port, callback)', function () {
 
             beforeEach(function () {
-                this.startCallback = function () {
-                };
+                this.startCallback = Stubs.newFunction();
                 this.folio.start(1234, this.startCallback);
             });
 
             it('Should delegate to the http server with the correct port', function () {
-                expect(this.HttpServer.prototype.start.getCall(0).args[0]).to.equal(1234);
+                assert(this.HttpServer.prototype.start.calledWithExactly(1234, sinon.match.any));
             });
 
             it('Should delegate to the http server with the correct completion function', function () {
-                expect(this.HttpServer.prototype.start.getCall(0).args[1]).to.equal(this.startCallback);
+                assert(this.HttpServer.prototype.start.calledWithExactly(sinon.match.any, this.startCallback));
             });
         });
 
         describe('On stop(callback)', function () {
 
             beforeEach(function () {
-                this.stopCallback = function () {
-                };
+                this.stopCallback = Stubs.newFunction();
                 this.folio.stop(this.stopCallback);
             });
 
             it('Should delegate to the http server with the correct completion function', function () {
-                expect(this.HttpServer.prototype.stop.getCall(0).args[0]).to.equal(this.stopCallback);
+                assert(this.HttpServer.prototype.stop.calledWithExactly(this.stopCallback));
             });
         });
 
+        describe('On setRenderEngine(renderEngine)', function () {
 
-        describe('On cluster(clusterizedFunction)', function () {
+            describe('First call', function () {
 
-            beforeEach(function () {
-                this.clusterizeFunction = function () {
-                };
+                beforeEach(function () {
 
-                this.folio.cluster(this.clusterizeFunction);
-            });
+                    this.folio.responseDecorator.addDecoration.reset();
+                    this.mockRenderEngine = {};
+                    this.folio.setRenderEngine(this.mockRenderEngine);
 
-            it('Should delegate to the processManager', function () {
-                expect(this.ProcessManager.prototype.cluster.callCount).to.equal(1);
-                expect(this.ProcessManager.prototype.cluster.getCall(0).args).to.deep.equal([this.clusterizeFunction]);
-            });
+                });
 
-        });
+                it('Should set the render engine', function () {
 
-        describe('On jsonBodyParser()', function () {
+                    expect(this.folio.getRenderEngine()).to.not.be.undefined;
 
-            beforeEach(function () {
+                });
 
-                this.middleware = this.folio.jsonBodyParser();
+                it('It should add a render view decoration to the response decorator', function () {
 
-            });
+                    assert(this.folio.responseDecorator.addDecoration.calledOnce);
 
-            it('Should delegate to the JSON Body Parser factory', function () {
-
-                expect(this.JSONBodyParserFactory.prototype.newMiddleware.callCount).to.equal(1);
+                });
 
             });
 
-            it('Return the middleware returned by the JSON Body Parser factory', function () {
+            describe('Subsequent calls', function () {
 
-                expect(this.middleware).to.deep.equal(this.JSONBodyParserMiddleware);
+                beforeEach(function () {
+
+                    this.folio.responseDecorator.addDecoration.reset();
+                    this.mockRenderEngine = {};
+                    this.folio.setRenderEngine(this.mockRenderEngine);
+
+                });
+
+                it('Should throw', function () {
+
+                    Assertions.assertThrows(function () {
+
+                        this.folio.setRenderEngine(this.mockRenderEngine);
+
+                    }, 'Render engine already set', this);
+
+                });
 
             });
+
 
         });
 
         describe('On reset()', function () {
 
             beforeEach(function () {
-                this.spies.routeManagerReset = sinon.spy(this.folio._routeManager, 'reset');
-                this.spies.routeMiddlewareManagerReset = sinon.spy(this.folio._routeMiddlewareManager, 'reset');
-                this.spies.routeHandlerManagerReset = sinon.spy(this.folio._routeHandlerManager, 'reset');
 
                 this.folio.reset();
-            });
-
-            it('Should reset the route manager', function () {
-
-                expect(this.folio._routeManager.reset.callCount).to.equal(1);
 
             });
 
-            it('Should reset the route middleware manager', function () {
+            it('Should reset the route registry', function () {
 
-                expect(this.folio._routeMiddlewareManager.reset.callCount).to.equal(1);
+                assert(this.folio.routeRegistry.reset.calledOnce);
 
             });
 
-            it('Should reset the route handler manager', function () {
+            it('Should reset the route middleware registry', function () {
 
-                expect(this.folio._routeHandlerManager.reset.callCount).to.equal(1);
+                assert(this.folio.routeMiddlewareRegistry.reset.calledOnce);
+
+            });
+
+            it('Should reset the route handler registry', function () {
+
+                assert(this.folio.routeHandlerRegistry.reset.calledOnce);
 
             });
 

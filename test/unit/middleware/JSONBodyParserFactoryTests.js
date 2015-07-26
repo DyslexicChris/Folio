@@ -1,45 +1,29 @@
-var _ = require('underscore');
 var expect = require('chai').expect;
+var assert = require('chai').assert;
+var Stubs = require('../Helpers/Stubs');
 var sinon = require('sinon');
-var mockery = require('mockery');
-var fs = require('fs');
+var JSONBodyParserFactory = require('../../../lib/middleware/JSONBodyParserFactory');
 
 
 describe('JSONBodyParserFactory', function () {
-
-    beforeEach(function () {
-
-        this.spies = {};
-
-        mockery.disable();
-
-        this.JSONBodyParserFactory = require('../../../lib/middleware/JSONBodyParserFactory');
-
-    });
-
-    afterEach(function () {
-        _.each(this.spies, function (spy) {
-            spy.restore();
-        })
-    });
 
     describe('On new with no max body size given', function () {
 
         beforeEach(function () {
 
-            this.jsonBodyParserFactory = new this.JSONBodyParserFactory();
+            this.jsonBodyParserFactory = new JSONBodyParserFactory();
 
         });
 
-        it('Should not be null', function(){
+        it('Should not be undefined', function () {
 
-            expect(this.jsonBodyParserFactory).to.not.equal(undefined);
+            expect(this.jsonBodyParserFactory).to.not.be.undefined;
 
         });
 
-        it('Should have the default max body size set', function(){
+        it('Should have the default max body size set', function () {
 
-            expect(this.jsonBodyParserFactory._maxBodySize).to.equal(4194304);
+            expect(this.jsonBodyParserFactory.maxBodySize()).to.equal(4194304);
 
         });
 
@@ -49,148 +33,120 @@ describe('JSONBodyParserFactory', function () {
 
         beforeEach(function () {
 
-            this.jsonBodyParserFactory = new this.JSONBodyParserFactory(5);
+            this.jsonBodyParserFactory = new JSONBodyParserFactory(5);
             this.jsonBodyParser = this.jsonBodyParserFactory.newMiddleware();
 
         });
 
-        it('Should not be null', function(){
+        it('Should not be null', function () {
 
-            expect(this.jsonBodyParserFactory).to.not.equal(undefined);
-
-        });
-
-        it('Should have the correct max body size set in bytes', function(){
-
-            expect(this.jsonBodyParserFactory._maxBodySize).to.equal(5242880);
+            expect(this.jsonBodyParserFactory).to.not.be.undefined;
 
         });
 
-        it('Should return a middleware function when asked', function(){
+        it('Should have the correct max body size set in bytes', function () {
 
-            expect(this.jsonBodyParser).to.not.equal(undefined);
+            expect(this.jsonBodyParserFactory.maxBodySize()).to.equal(5242880);
 
         });
 
-        describe('Given a request carrying valid JSON under the max body size', function(){
+        it('Should return a middleware function when asked', function () {
+
+            expect(this.jsonBodyParser).to.not.be.undefined;
+
+        });
+
+        describe('Given a request carrying valid JSON under the max body size', function () {
 
 
-            beforeEach(function(){
+            beforeEach(function () {
 
-                this.mockRequest = fs.createReadStream(__dirname + '/../../test-data/json-body-parser-valid.json', {
-                    encoding: 'utf8'
-                });
-
-                this.mockResponse = {};
+                this.mockRequest = Stubs.newRequestFromFile(__dirname + '/../../test-data/json-body-parser-valid.json');
+                this.mockResponse = Stubs.newResponse();
 
             });
 
-            it('Should parse JSON correctly, attach parsed object to the request, and call the next middleware/handler function', function(done){
+            it('Should parse JSON correctly, attach parsed object to the request, and call the next middleware/handler function', function (done) {
 
-                var thisTest = this;
-                this.jsonBodyParser(this.mockRequest, this.mockResponse, function(){
+                this.jsonBodyParser(this.mockRequest, this.mockResponse, function () {
 
-                    expect(thisTest.mockRequest.body).to.deep.equal({
+                    expect(this.mockRequest.body).to.deep.equal({
                         myObject: 'myValue',
                         otherProperty: 'otherValue'
                     });
 
                     done();
 
-                });
+                }.bind(this));
 
             });
 
         });
 
-        describe('Given a request carrying invalid JSON under the max body size', function(){
+        describe('Given a request carrying invalid JSON under the max body size', function () {
 
+            beforeEach(function () {
 
-            beforeEach(function(){
-
-                this.mockRequest = fs.createReadStream(__dirname + '/../../test-data/json-body-parser-invalid.json', {
-                    encoding: 'utf8'
-                });
-
-                this.mockResponse = {};
+                this.mockRequest = Stubs.newRequestFromFile(__dirname + '/../../test-data/json-body-parser-invalid.json');
+                this.mockResponse = Stubs.newResponse();
 
             });
 
-            it('Should not parse JSON and therefore not attach parsed object to the request, but still call the next middleware/handler function', function(done){
+            it('Should not parse JSON and therefore not attach parsed object to the request, but still call the next middleware/handler function', function (done) {
 
-                var thisTest = this;
-                this.jsonBodyParser(this.mockRequest, this.mockResponse, function(){
-                    expect(thisTest.mockRequest.body).to.deep.equal(undefined);
+                this.jsonBodyParser(this.mockRequest, this.mockResponse, function () {
+                    expect(this.mockRequest.body).to.be.undefined;
                     done();
-                });
+                }.bind(this));
 
             });
 
-            it('Should set the "badJSON" flag to true on the request object', function(done){
+            it('Should set the "badJSON" flag to true on the request object', function (done) {
 
-                var thisTest = this;
-                this.jsonBodyParser(this.mockRequest, this.mockResponse, function(){
-                    expect(thisTest.mockRequest.badJSON).to.equal(true);
+                this.jsonBodyParser(this.mockRequest, this.mockResponse, function () {
+                    expect(this.mockRequest.badJSON).to.equal(true);
                     done();
-                });
+                }.bind(this));
 
             });
 
         });
 
-        describe('Given a request carrying data that is over the max body size', function(){
+        describe('Given a request carrying data that is over the max body size', function () {
 
+            beforeEach(function () {
 
-            beforeEach(function(){
+                this.mockRequest = Stubs.newRequest();
+                this.mockRequest.on.withArgs('data', sinon.match.any).callsArgWith(1, 'someData');
+                this.mockRequest.on.withArgs('end', sinon.match.any).callsArg(1);
 
-                this.mockRequest = {
-                    on: function(event, callback){
-                        if(event == 'data'){
-                            callback('someData');
-                        } else if(event == 'end'){
-                            callback();
-                        }
-                    }
-                };
+                this.mockResponse = Stubs.newResponse();
+                this.mockResponse.statusCode = 100;
 
-                this.mockRequest.connection = {
-                    destroy: function(){}
-                };
+                this.nextFunction = Stubs.newFunction();
 
-                this.mockResponse = {
-                    statusCode:100,
-                    end: function(){
-                    }
-                };
-
-                this.nextFunction = function(){};
-
-                this.spies.responseEnd = sinon.spy(this.mockResponse, 'end');
-                this.spies.requestConnectionDestroy = sinon.spy(this.mockRequest.connection, 'destroy');
-                this.spies.nextFunction = sinon.spy(this, 'nextFunction');
-
-                this.jsonBodyParserFactory = new this.JSONBodyParserFactory(-1);
+                this.jsonBodyParserFactory = new JSONBodyParserFactory(-1);
                 this.jsonBodyParser = this.jsonBodyParserFactory.newMiddleware();
                 this.jsonBodyParser(this.mockRequest, this.mockResponse, this.nextFunction);
 
             });
 
-            it('Should send a 413 - "Request too large" response', function(){
+            it('Should send a 413 - "Request too large" response', function () {
 
                 expect(this.mockResponse.statusCode).to.equal(413);
-                expect(this.mockResponse.end.callCount).to.equal(1);
+                assert(this.mockResponse.end.calledOnce);
 
             });
 
-            it('Should destroy the request connection', function(){
+            it('Should destroy the request connection', function () {
 
-                expect(this.mockRequest.connection.destroy.callCount).to.equal(1);
+                assert(this.mockRequest.connection.destroy.calledOnce);
 
             });
 
-            it('Should not call the next middlware/handler function', function(){
+            it('Should not call the next middlware/handler function', function () {
 
-                expect(this.nextFunction.callCount).to.equal(0);
+                assert(this.nextFunction.notCalled);
 
             });
 

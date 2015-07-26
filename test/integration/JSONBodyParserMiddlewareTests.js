@@ -8,7 +8,7 @@ describe('JSON Body Parser Middleware Tests', function () {
         beforeEach(function () {
 
             this.app.post('/hello-world')
-                .middleware(this.app.jsonBodyParser())
+                .middleware(this.app.middlewareFactory.jsonBodyParser())
                 .handler(function (request, response) {
 
                     var badJSON = request.badJSON;
