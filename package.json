@@ -1,6 +1,6 @@
 {
   "name": "folio.js",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "author": "DyslexicChris <npm@dyslexicchris.co.uk> (https://github.com/DyslexicChris)",
   "description": "A fluent Node.js HTTP API framework inspired by express",
   "repository": {
